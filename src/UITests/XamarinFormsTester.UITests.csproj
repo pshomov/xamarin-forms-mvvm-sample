@@ -39,13 +39,13 @@
   <ItemGroup>
     <ProjectReference Include="..\iOS\XamarinFormsTester.iOS.csproj">
       <Project>{51EBAD5B-CBCE-4D7E-994F-79922851E35D}</Project>
-      <Name>XamarinFormsTester.iOS</Name>
+      <Name>iOS</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Droid\XamarinFormsTester.Droid.csproj">
       <Project>{9B1FE9CA-445E-4083-B69C-AA89A5BAA02D}</Project>
-      <Name>XamarinFormsTester.Droid</Name>
+      <Name>Droid</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       <Private>False</Private>
     </ProjectReference>

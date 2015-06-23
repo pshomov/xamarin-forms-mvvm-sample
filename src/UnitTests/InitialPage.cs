@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
-using XamarinFormsTester;
 
 namespace XamarinFormsTester.UnitTests
 {

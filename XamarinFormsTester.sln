@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTester", "src\Core\XamarinFormsTester.csproj", "{D1371C6D-8B18-4AE2-9714-03EE17A19A80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\XamarinFormsTester.csproj", "{D1371C6D-8B18-4AE2-9714-03EE17A19A80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTester.iOS", "src\iOS\XamarinFormsTester.iOS.csproj", "{51EBAD5B-CBCE-4D7E-994F-79922851E35D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iOS", "src\iOS\XamarinFormsTester.iOS.csproj", "{51EBAD5B-CBCE-4D7E-994F-79922851E35D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTester.Droid", "src\Droid\XamarinFormsTester.Droid.csproj", "{9B1FE9CA-445E-4083-B69C-AA89A5BAA02D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Droid", "src\Droid\XamarinFormsTester.Droid.csproj", "{9B1FE9CA-445E-4083-B69C-AA89A5BAA02D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTester.UITests", "src\UITests\XamarinFormsTester.UITests.csproj", "{B7C06ACA-F333-46BC-8C63-49C7B814D495}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests", "src\UITests\XamarinFormsTester.UITests.csproj", "{B7C06ACA-F333-46BC-8C63-49C7B814D495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTester.UnitTests", "src\XamarinFormsTester.UnitTests\XamarinFormsTester.UnitTests.csproj", "{8A5865F3-4E9B-4932-94FB-B1C2E5686472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "src\UnitTests\XamarinFormsTester.UnitTests.csproj", "{8A5865F3-4E9B-4932-94FB-B1C2E5686472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
