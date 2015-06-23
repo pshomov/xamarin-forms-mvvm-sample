@@ -62,7 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XamarinFormsTester.csproj">
+    <ProjectReference Include="..\Core\XamarinFormsTester.csproj">
       <Project>{D1371C6D-8B18-4AE2-9714-03EE17A19A80}</Project>
       <Name>Core</Name>
     </ProjectReference>
