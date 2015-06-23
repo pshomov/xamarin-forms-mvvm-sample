@@ -10,8 +10,8 @@ namespace XamarinFormsTester
 
         public App ()
         {
-            appModel = new AppModel ();
-            MainPage = appModel.GetInitialPage();
+            appModel = new AppModel (null,null);
+            MainPage = appModel.GetInitialViewModel().Page;
         }
 
         protected override void OnStart ()

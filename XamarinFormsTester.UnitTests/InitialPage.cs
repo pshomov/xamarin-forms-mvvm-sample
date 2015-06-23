@@ -1,15 +1,25 @@
 ﻿using NUnit.Framework;
+using NSubstitute;
 
 namespace XamarinFormsTester.UnitTests
 {
     [TestFixture]
     public class Class1
     {
+        ISettings settings;
+
+        [SetUp]
+        public void SetUp(){
+            settings = Substitute.For<ISettings> ();
+        }
+
         [Test]
         public void PassingTest()
         {
-            var app = new AppModel ();
-            Assert.That(app.GetInitialPage(), Is.Not.Null);
+            settings.Exists (Arg.Any<string> ()).Returns (false);
+
+            var app = new AppModel (null,settings);
+            Assert.That(app.GetInitialViewModel(), Is.Not.Null);
         }
 
     }
