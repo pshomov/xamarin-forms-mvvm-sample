@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using XamarinFormsTester.ViewModels;
 
 namespace XamarinFormsTester
 {
@@ -18,9 +19,9 @@ namespace XamarinFormsTester
 
         public ViewModel GetInitialViewModel() {
             if (state.LoggedIn) {
-                return new Login();
+                return new LoginPageViewModel();
             } else {
-                return new Login();
+                return new LoginPageViewModel();
             }
         }
     }
