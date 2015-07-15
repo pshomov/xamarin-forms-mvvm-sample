@@ -29,23 +29,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Xamarin.UITest">
-      <HintPath>..\..\packages\Xamarin.UITest.0.8.0\lib\Xamarin.UITest.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.UITest">
+      <HintPath>..\..\packages\Xamarin.UITest.1.0.0\lib\Xamarin.UITest.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iOS\XamarinFormsTester.iOS.csproj">
       <Project>{51EBAD5B-CBCE-4D7E-994F-79922851E35D}</Project>
-      <Name>iOS</Name>
+      <Name>XamarinFormsTester.iOS</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Droid\XamarinFormsTester.Droid.csproj">
       <Project>{9B1FE9CA-445E-4083-B69C-AA89A5BAA02D}</Project>
-      <Name>Droid</Name>
+      <Name>XamarinFormsTester.Droid</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       <Private>False</Private>
     </ProjectReference>

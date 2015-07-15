@@ -19,7 +19,7 @@ namespace XamarinFormsTester
 
         public ViewModel GetInitialViewModel() {
             if (state.LoggedIn) {
-                return new LoginPageViewModel();
+                return new DeviceListPageViewModel();
             } else {
                 return new LoginPageViewModel();
             }
