@@ -10,7 +10,7 @@ namespace XamarinFormsTester
 
         public App ()
         {
-            appModel = new AppModel (null,null);
+            appModel = new AppModel (null);
             MainPage = appModel.GetInitialViewModel().Page;
         }
 

@@ -8,7 +8,7 @@ namespace XamarinFormsTester
     {
         AppState state;
 
-        public AppModel (ISecureStorage storage, ISettings settings)
+        public AppModel (ISettings settings)
         {
                 state = settings.Get<AppState> ("state");
         }
