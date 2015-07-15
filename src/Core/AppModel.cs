@@ -10,11 +10,7 @@ namespace XamarinFormsTester
 
         public AppModel (ISecureStorage storage, ISettings settings)
         {
-            if (settings.Exists ("state")) {
                 state = settings.Get<AppState> ("state");
-            } else
-                state = new AppState ();
-
         }
 
         public ViewModel GetInitialViewModel() {
