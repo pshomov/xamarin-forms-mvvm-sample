@@ -51,6 +51,11 @@
     <Compile Include="Services\ISettings.cs" />
     <Compile Include="Infrastructure\ViewModel.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="AppM.cs" />
+    <Compile Include="ViewModels\InitializingAppPageViewModel.cs" />
+    <Compile Include="Services\INavigator.cs" />
+    <Compile Include="ModeViewViewModelConnection.cs" />
+    <Compile Include="Services\Navigator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
@@ -69,6 +74,15 @@
     </Reference>
     <Reference Include="Xamarin.Forms.Platform">
       <HintPath>..\..\packages\Xamarin.Forms.1.4.3.6376\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Portable.Ninject.3.3.1\lib\portable-net4+sl5+wp8+win8+wpa81+monotouch+monoandroid+Xamarin.iOS\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Ioc">
+      <HintPath>..\..\packages\XLabs.IoC.2.0.5610.2\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Ioc.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Ioc.Ninject">
+      <HintPath>..\..\packages\XLabs.IoC.Ninject.2.0.5610.2\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Ioc.Ninject.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -7,18 +7,16 @@ namespace XamarinFormsTester
     public class AppModel
     {
         AppState state;
+        AppM app;
 
         public AppModel (ISettings settings)
         {
-                state = settings.Get<AppState> ("state");
+            this.app = app;
+            state = settings.Get<AppState> ("state");
         }
 
         public ViewModel GetInitialViewModel() {
-            if (state.LoggedIn) {
-                return new DeviceListPageViewModel();
-            } else {
-                return new LoginPageViewModel();
-            }
+            return new InitializingAppPageViewModel ();
         }
     }
 }

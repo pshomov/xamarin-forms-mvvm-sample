@@ -1,6 +1,8 @@
 ﻿using System;
 
 using Xamarin.Forms;
+using XamarinFormsTester.Services;
+using XLabs.Ioc;
 
 namespace XamarinFormsTester
 {
@@ -8,15 +10,20 @@ namespace XamarinFormsTester
     {
         AppModel appModel;
 
+        AppM appM;
+
         public App ()
         {
             appModel = new AppModel (null);
-            MainPage = appModel.GetInitialViewModel().Page;
+            var navigationPage = new NavigationPage (appModel.GetInitialViewModel ().Page);
+            var container = new SimpleContainer ();
+            appM = new AppM (new Navigator(navigationPage.Navigation, container.GetResolver()));
+            MainPage = navigationPage;
         }
 
         protected override void OnStart ()
         {
-            // Handle when your app starts
+            appM.Start();
         }
 
         protected override void OnSleep ()
