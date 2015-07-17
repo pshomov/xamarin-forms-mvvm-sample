@@ -4,19 +4,22 @@ using XamarinFormsTester.ViewModels;
 
 namespace XamarinFormsTester
 {
-    public class AppM
+    public class AppModel
     {
         INavigator navigator;
 
-        public AppM (INavigator navigator)
+        public AppModel (INavigator navigator)
         {
             this.navigator = navigator;
         }
 
         public void Start ()
         {
-            navigator.PushAsync<DeviceListPageViewModel> ();
+            navigator.PushAsync<DeviceListPageViewModel> ((vm) => {
+                vm.Pulling = true;
+            });
         }
+
     }
 }
 

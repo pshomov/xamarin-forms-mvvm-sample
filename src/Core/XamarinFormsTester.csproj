@@ -50,11 +50,13 @@
     <Compile Include="Services\ISettings.cs" />
     <Compile Include="Infrastructure\ViewModel.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="AppM.cs" />
     <Compile Include="ViewModels\InitializingAppPageViewModel.cs" />
     <Compile Include="Services\INavigator.cs" />
-    <Compile Include="ModeViewViewModelConnection.cs" />
     <Compile Include="Services\Navigator.cs" />
+    <Compile Include="AppModel.cs" />
+    <Compile Include="Services\ModeViewViewModelConnection.cs" />
+    <Compile Include="ViewModels\DeviceSummary.cs" />
+    <Compile Include="Services\INavigationAware.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.1.4.3.6376\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

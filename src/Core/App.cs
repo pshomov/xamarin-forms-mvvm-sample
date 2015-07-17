@@ -8,13 +8,13 @@ namespace XamarinFormsTester
 {
     public class App : Application
     {
-        AppM appM;
+        AppModel appM;
 
         public App ()
         {
             var navigationPage = new NavigationPage (new ContentPage());
             var container = new SimpleContainer ();
-            appM = new AppM (new Navigator(navigationPage.Navigation, container.GetResolver()));
+            appM = new AppModel (new Navigator(navigationPage.Navigation, container.GetResolver()));
             MainPage = navigationPage;
         }
 

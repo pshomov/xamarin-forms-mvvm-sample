@@ -19,9 +19,9 @@ namespace XamarinFormsTester.UnitTests
         }
 
         [Test]
-        public void should_go_to_devicelist_page_if_logged_in_already()
+        public void should_go_to_devicelist_page_on_start()
         {
-            var app = new AppM (nav);
+            var app = new AppModel (nav);
 
             app.Start ();
 
