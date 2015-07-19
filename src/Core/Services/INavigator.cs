@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using XLabs.Ioc;
 
 namespace XamarinFormsTester.Services
 {

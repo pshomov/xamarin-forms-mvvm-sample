@@ -1,18 +1,18 @@
 ﻿using System;
-using XLabs.Ioc;
 using Xamarin.Forms;
 using System.Linq;
+using Microsoft.Practices.Unity;
 
 namespace XamarinFormsTester
 {
     public static class ModeViewViewModelConnection
     {
-        public static Page ResolvePage<T>(this IResolver container)
+        public static Page ResolvePage<T>(this IUnityContainer container)
         {
             return (Page)container.Resolve(ViewFromViewModel(typeof(T)));
         }
 
-        public static Page ResolvePage(this IResolver container, Type viewModel)
+        public static Page ResolvePage(this IUnityContainer container, Type viewModel)
         {
             var type = ViewFromViewModel(viewModel);
             return (Page)container.Resolve(type);

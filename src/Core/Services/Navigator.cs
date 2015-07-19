@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using XLabs.Ioc;
+using Microsoft.Practices.Unity;
 
 namespace XamarinFormsTester.Services
 {
     
     public class Navigator : INavigator {
         INavigation nav;
-        IResolver container;
+        IUnityContainer container;
 
-        public Navigator (INavigation nav, IResolver resolver)
+        public Navigator (INavigation nav, IUnityContainer resolver)
         {
             this.container = resolver;
             this.nav = nav;

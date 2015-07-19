@@ -8,8 +8,11 @@ namespace XamarinFormsTester
     {
         INavigator navigator;
 
-        public AppModel (INavigator navigator)
+        IServiceAPI api;
+
+        public AppModel (INavigator navigator, IServiceAPI api)
         {
+            this.api = api;
             this.navigator = navigator;
         }
 

@@ -2,7 +2,7 @@
 
 using Xamarin.Forms;
 using XamarinFormsTester.Services;
-using XLabs.Ioc;
+using Microsoft.Practices.Unity;
 
 namespace XamarinFormsTester
 {
@@ -13,8 +13,8 @@ namespace XamarinFormsTester
         public App ()
         {
             var navigationPage = new NavigationPage (new ContentPage());
-            var container = new SimpleContainer ();
-            appM = new AppModel (new Navigator(navigationPage.Navigation, container.GetResolver()));
+            var container = new UnityContainer ();
+            appM = new AppModel (new Navigator(navigationPage.Navigation, container), null);
             MainPage = navigationPage;
         }
 
