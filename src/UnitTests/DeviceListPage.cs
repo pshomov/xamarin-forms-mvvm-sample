@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NSubstitute;
 using XamarinFormsTester.ViewModels;
 using XamarinFormsTester.Services;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Practices.Unity;
+using PubSub;
 
 namespace XamarinFormsTester.UnitTests
 {
@@ -13,9 +14,7 @@ namespace XamarinFormsTester.UnitTests
     public class DeviceListPage
     {
         INavigator nav;
-
         IUnityContainer container;
-
         IServiceAPI serviceAPI;
 
         [SetUp]
@@ -32,8 +31,8 @@ namespace XamarinFormsTester.UnitTests
         public void should_go_to_devicelist_page_on_start ()
         {
             serviceAPI.GetDevices ().Returns (async r => {
-                await Task.Delay (100);
-                return new List<DeviceInfo> (){ new DeviceInfo {
+                return new List<DeviceInfo> (){ 
+                        new DeviceInfo {
                             Name = "D1",
                             Location = "L1",
                             Online = true
@@ -44,13 +43,26 @@ namespace XamarinFormsTester.UnitTests
                         } 
                 };
             });
+
+            AssertModel<DeviceListPageViewModel> (vm => {
+                Assert.That(vm.Pulling, Is.False);
+                Assert.That(vm.Devices[0].Name, Is.EqualTo("D1"));
+                Assert.That(vm.Devices[1].Name, Is.EqualTo("D2"));
+            });
+
             var app = container.Resolve<AppModel> ();
 
             app.Start ();
-//            serviceAPI.Received ().GetDevices ();
-            nav.Received ().PushAsync<DeviceListPageViewModel> (Arg.Any<Action<DeviceListPageViewModel>>());
         }
 
+        void AssertModel<ViewModel> (Action<ViewModel> assertBlock) where ViewModel : class,new()
+        {
+            var deviceListPageViewModel = new ViewModel();
+            nav.PushAsync<ViewModel> (Arg.Do<Action<ViewModel>> (modelUpdate =>  {
+                modelUpdate.Invoke (deviceListPageViewModel);
+                assertBlock.Invoke (deviceListPageViewModel);
+            }), Arg.Any<List<Type>> ());
+        }
     }
 }
 

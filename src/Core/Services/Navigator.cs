@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Microsoft.Practices.Unity;
+using PubSub;
+using System.Collections.Generic;
 
 namespace XamarinFormsTester.Services
 {
@@ -23,10 +25,15 @@ namespace XamarinFormsTester.Services
             return nav.PushAsync(view);
         }
 
-        public Task PushAsync<ModelType>(Action<ModelType> configureModel) where ModelType : class
+        public Task PushAsync<ModelType>(Action<ModelType> configureModel, List<Type> updateOnEvents) where ModelType : class
         {
             var view = this.DataboundPageFromModelType<ModelType>();
             configureModel.Invoke ((ModelType)view.BindingContext);
+            foreach (var @event in updateOnEvents) {
+                view.Subscribe(@event, e => {
+                    configureModel.Invoke ((ModelType)view.BindingContext);
+                });
+            }
             return nav.PushAsync(view);
         }
 
