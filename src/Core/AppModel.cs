@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PubSub;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace XamarinFormsTester
 {
@@ -45,7 +46,14 @@ namespace XamarinFormsTester
                     vm.Devices = DTO2DeviceListPageViewModel(Devices);
                 }
             }, new List<Type> {Helpers.updateOn<DeviceListRetrievalStarted>(), Helpers.updateOn<DeviceListUpdated>()});
+        }
 
+        public void OnSelectDevice(DeviceSelected cmd)
+        {
+            navigator.PushAsync<DeviceDetailsPageViewModel> ((vm) => {
+                var device = Devices.Single(d => d.Id == cmd.deviceId);
+                vm.Title = device.Name;
+            }, new List<Type> {Helpers.updateOn<DeviceInfoUpdated>()});
         }
 
         public async void OnUpdateDeviceList(){

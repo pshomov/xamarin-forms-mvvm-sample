@@ -33,18 +33,18 @@ namespace XamarinFormsTester.UnitTests
         [Test]
         public void should_go_to_devicelist_page_on_start ()
         {
-            serviceAPI.GetDevices ().Returns (async r => {
-                return new List<DeviceInfo> (){ 
-                        new DeviceInfo {
-                            Name = "D1",
-                            Location = "L1",
-                            Online = true
-                        }, new DeviceInfo {
-                            Name = "D2",
-                            Location = "L2",
-                            Online = true
-                        } 
-                };
+            serviceAPI.GetDevices ().Returns (r => {
+                return Task.FromResult(new List<DeviceInfo> (){ 
+                    new DeviceInfo {
+                        Name = "D1",
+                        Location = "L1",
+                        Online = true
+                    }, new DeviceInfo {
+                        Name = "D2",
+                        Location = "L2",
+                        Online = true
+                    } 
+                });
             });
 
             AssertModel<DeviceListPageViewModel> (vm => {
@@ -57,7 +57,36 @@ namespace XamarinFormsTester.UnitTests
 
             nav.Received().PushAsync<DeviceListPageViewModel> (Arg.Any<Action<DeviceListPageViewModel>> (), Arg.Any<List<Type>> ());
         }
-            
+
+        [Test]
+        public void should_navigate_to_device_info_when_selected ()
+        {
+            serviceAPI.GetDevices ().Returns (r => {
+                return Task.FromResult(new List<DeviceInfo> (){ 
+                    new DeviceInfo {
+                        Name = "D1",
+                        Id = new DeviceId("id1"),
+                        Location = "L1",
+                        Online = true
+                    }, new DeviceInfo {
+                        Name = "D2",
+                        Location = "L2",
+                        Id = new DeviceId("id2"),
+                        Online = true
+                    } 
+                });
+            });
+
+            AssertModel<DeviceDetailsPageViewModel> (vm => {
+                Assert.That(vm.Title, Is.EqualTo("D1"));
+            });
+
+            app.Start ();
+            app.OnSelectDevice (new DeviceSelected{deviceId = new DeviceId("id1")});
+
+            nav.Received().PushAsync<DeviceDetailsPageViewModel> (Arg.Any<Action<DeviceDetailsPageViewModel>> (), Arg.Any<List<Type>> ());
+        }
+
         void AssertModel<ViewModel> (Action<ViewModel> assertBlock) where ViewModel : class,new()
         {
             var deviceListPageViewModel = new ViewModel();
