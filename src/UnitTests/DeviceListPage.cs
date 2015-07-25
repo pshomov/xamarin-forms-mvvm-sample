@@ -17,6 +17,8 @@ namespace XamarinFormsTester.UnitTests
         IUnityContainer container;
         IServiceAPI serviceAPI;
 
+        AppModel app;
+
         [SetUp]
         public void SetUp ()
         {
@@ -25,6 +27,7 @@ namespace XamarinFormsTester.UnitTests
             container.RegisterInstance (nav);
             serviceAPI = Substitute.For<IServiceAPI> ();
             container.RegisterInstance (serviceAPI);
+            app = container.Resolve<AppModel> ();
         }
 
         [Test]
@@ -50,11 +53,11 @@ namespace XamarinFormsTester.UnitTests
                 Assert.That(vm.Devices[1].Name, Is.EqualTo("D2"));
             });
 
-            var app = container.Resolve<AppModel> ();
-
             app.Start ();
-        }
 
+            nav.Received().PushAsync<DeviceListPageViewModel> (Arg.Any<Action<DeviceListPageViewModel>> (), Arg.Any<List<Type>> ());
+        }
+            
         void AssertModel<ViewModel> (Action<ViewModel> assertBlock) where ViewModel : class,new()
         {
             var deviceListPageViewModel = new ViewModel();
