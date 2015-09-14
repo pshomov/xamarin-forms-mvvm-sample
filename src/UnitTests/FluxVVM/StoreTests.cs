@@ -8,21 +8,29 @@ namespace XamarinFormsTester.UnitTests.FluxVVM
     [TestFixture]
     public class StoreTests
     {
-        enum Actions {
-            ADD_ITEM,
-            REMOVE_ITEM
+
+        public struct ADD_ITEM : XamarinFormsTester.Infrastructure.FluxVVM.Action {
+            public String item;
         }
 
         [Test]
         public void should_register_root_reducer(){
             
-            Reducer<List<string>, Actions> reducer = (List<string>state, XamarinFormsTester.Infrastructure.FluxVVM.Action<Actions> action) =>  {                
+            Reducer<List<string>> reducer = (List<string>state, XamarinFormsTester.Infrastructure.FluxVVM.Action action) =>  {                
                 var newState = new List<string> (state);
-                newState.Add("Read the Redux docs");
+
+                switch(action.GetType().Name){
+                    case "ADD_ITEM":
+                        ADD_ITEM concreteEv = (ADD_ITEM)action;
+                        newState.Add(concreteEv.item);
+                        break;
+                    default:
+                        break;
+                }
                 return newState;
             };
-            var store = new Store<List<String>, Actions> (reducer, new List<string>{ "Use FluxVVM" });
-            store.dispatch (new XamarinFormsTester.Infrastructure.FluxVVM.Action<Actions>{type = Actions.ADD_ITEM});
+            var store = new Store<List<String>> (reducer, new List<string>{ "Use FluxVVM" });
+            store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
 
             CollectionAssert.AreEqual(store.getState(), new List<string>{"Use FluxVVM", "Read the Redux docs"});
         }

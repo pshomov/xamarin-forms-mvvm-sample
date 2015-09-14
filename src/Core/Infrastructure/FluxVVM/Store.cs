@@ -2,13 +2,12 @@
 
 namespace XamarinFormsTester.Infrastructure.FluxVVM
 {
-    public struct Action<A> {
-        public A type;
+    public interface Action {
     }
-    public delegate State Reducer<State, Actions>(State state, Action<Actions> action);
-    public class Store<State, Actions>
+    public delegate State Reducer<State>(State state, Action action);
+    public class Store<State>
     {
-        public void dispatch (Action<Actions> action)
+        public void dispatch (Action action)
         {
             this._state = rootReducer.Invoke (this._state, action);
         }
@@ -20,9 +19,9 @@ namespace XamarinFormsTester.Infrastructure.FluxVVM
 
         State _state;
 
-        Reducer<State, Actions> rootReducer;
+        Reducer<State> rootReducer;
 
-        public Store (Reducer<State, Actions> rootReducer, State initialState)
+        public Store (Reducer<State> rootReducer, State initialState)
         {
             this.rootReducer = rootReducer;
             this._state = initialState;
