@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using XamarinFormsTester.Infrastructure.FluxVVM;
+using XamarinFormsTester.Infrastructure.ReduxVVM;
 using System.Collections.Generic;
 using System;
 
 namespace XamarinFormsTester.UnitTests.FluxVVM
 {
-    public class ADD_ITEM : XamarinFormsTester.Infrastructure.FluxVVM.Action {
+    public class ADD_ITEM : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
         public String item;
     }
 
@@ -17,7 +17,7 @@ namespace XamarinFormsTester.UnitTests.FluxVVM
         [Test]
         public void should_register_root_reducer(){
             
-            Reducer<List<string>> reducer = (List<string>state, XamarinFormsTester.Infrastructure.FluxVVM.Action action) =>  {                
+            Reducer<List<string>> reducer = (List<string>state, XamarinFormsTester.Infrastructure.ReduxVVM.Action action) =>  {                
                 var newState = new List<string> (state);
 
                 switch(action.GetType().Name){

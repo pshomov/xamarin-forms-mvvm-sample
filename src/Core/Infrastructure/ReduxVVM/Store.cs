@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XamarinFormsTester.Infrastructure.FluxVVM
+namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
     public interface Action {
     }
