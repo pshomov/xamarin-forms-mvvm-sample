@@ -3,7 +3,7 @@ using XamarinFormsTester.Infrastructure.ReduxVVM;
 using System.Collections.Generic;
 using System;
 
-namespace XamarinFormsTester.UnitTests.FluxVVM
+namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
     public class ADD_ITEM : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
         public String item;
@@ -30,10 +30,10 @@ namespace XamarinFormsTester.UnitTests.FluxVVM
                 }
                 return newState;
             };
-            var store = new Store<List<String>> (reducer, new List<string>{ "Use FluxVVM" });
+            var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
             store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use FluxVVM", "Read the Redux docs"});
+            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
 
         [Test]
@@ -46,10 +46,10 @@ namespace XamarinFormsTester.UnitTests.FluxVVM
                     return newSatte;
                 })
                 .Get();
-            var store = new Store<List<String>> (reducer, new List<string>{ "Use FluxVVM" });
+            var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
             store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use FluxVVM", "Read the Redux docs"});
+            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
 
         [Test]
@@ -57,10 +57,10 @@ namespace XamarinFormsTester.UnitTests.FluxVVM
 
             var reducer = new Events<List<string>>()
                 .Get();
-            var store = new Store<List<String>> (reducer, new List<string>{ "Use FluxVVM" });
+            var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
             store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use FluxVVM"});
+            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM"});
         }
     }
 }
