@@ -1,18 +1,14 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using XamarinFormsTester.Infrastructure.ReduxVVM;
 using System.Collections.Generic;
 using System;
 
 namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
-    public class ADD_ITEM : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
-        public String item;
-    }
 
     [TestFixture]
     public class StoreTests
     {
-
 
         [Test]
         public void should_register_root_reducer(){
@@ -21,8 +17,8 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
                 var newState = new List<string> (state);
 
                 switch(action.GetType().Name){
-                    case "ADD_ITEM":
-                        ADD_ITEM concreteEv = (ADD_ITEM)action;
+                    case "ItemAdded":
+                        ItemAdded concreteEv = (ItemAdded)action;
                         newState.Add(concreteEv.item);
                         break;
                     default:
@@ -31,7 +27,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
                 return newState;
             };
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
+            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
 
             CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
@@ -40,14 +36,14 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
         public void should_register_root_reducer_with_builder(){
 
             var reducer = new Events<List<string>>()
-                .When<ADD_ITEM>((state, action) => {
+                .When<ItemAdded>((state, action) => {
                     var newSatte = new List<String> (state);
                     newSatte.Add(action.item);
                     return newSatte;
                 })
                 .Get();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
+            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
 
             CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
@@ -58,10 +54,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
             var reducer = new Events<List<string>>()
                 .Get();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ADD_ITEM{item = "Read the Redux docs"});
+            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
 
             CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM"});
         }
     }
 }
-
