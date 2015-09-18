@@ -60,5 +60,23 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 
             CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM"});
         }
+
+		[Test]
+		public void should_notify_subscribers(){
+
+			var reducer = new Events<List<string>>();
+			var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
+
+			var changed = 0;
+			store.notifications += (state) => {
+				Assert.NotNull (state);
+				changed += 1;
+			};
+
+			store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+
+			Assert.That (changed, Is.EqualTo (1));
+		}
+
     }
 }
