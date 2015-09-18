@@ -15,6 +15,10 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		{
 			return Part<T> (composer, reducer.Get ());
 		}
+		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, ComposeReducer<T> reducer) where T : new()
+		{
+			return Part<T> (composer, reducer.Get ());
+		}
 		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, Reducer<T> reducer)
 		{
 			var memberExpr = composer.Body as System.Linq.Expressions.MemberExpression;

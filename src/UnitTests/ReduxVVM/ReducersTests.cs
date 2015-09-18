@@ -39,6 +39,66 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 			Assert.AreEqual(new AppStore{redditTopic = "Redux is awesome", visibility = true}, store.getState());
 
 		}
+
+		struct Address
+		{
+			public string streetNr;
+			public string city;
+		}
+
+		enum DeliveryMethod
+		{
+			REGULAR,
+			GUARANTEED
+		}
+
+		struct Destination
+		{
+			public Address addr;
+			public DeliveryMethod deliver;
+		}
+		struct Order
+		{
+			public string name;
+			public Address origin;
+			public Destination destination;
+		}
+		struct SetOrigin : XamarinFormsTester.Infrastructure.ReduxVVM.Action{
+			public Address newAddress;
+		}
+		struct SetDestination : XamarinFormsTester.Infrastructure.ReduxVVM.Action{
+			public Address newAddress;
+		}
+		struct BehindSchedule : XamarinFormsTester.Infrastructure.ReduxVVM.Action{
+		}
+		struct SetDelivery : XamarinFormsTester.Infrastructure.ReduxVVM.Action{
+			public DeliveryMethod method;
+		}
+
+
+		[Test]
+		public void should_prvide_way_to_create_deep_hierarchy_of_reducers(){
+			var originReducer = new Events<Address> ().When<SetOrigin> ((s, e) => e.newAddress);
+			var destinationReducer = new ComposeReducer<Destination> ()
+				.Part (s => s.deliver, new Events<DeliveryMethod> ().When<BehindSchedule>((s, a) => DeliveryMethod.REGULAR).When<SetDelivery>((_, a) => a.method))
+				.Part (s => s.addr, new Events<Address> ().When<SetDestination>((s,a) => a.newAddress));
+			var orderReducer = new ComposeReducer<Order> ()
+				.Part(s => s.origin, originReducer)
+				.Part(s => s.destination, destinationReducer);
+			var store = new Store<Order>(orderReducer, new Order(){});
+			store.dispatch (new SetOrigin{newAddress = new Address{streetNr = "Laugavegur 26", city="Reykjavík"}});
+			store.dispatch (new SetDestination{newAddress = new Address{streetNr = "5th Street", city="New York"}});
+			store.dispatch (new SetDelivery{method = DeliveryMethod.GUARANTEED});
+
+			store.dispatch (new BehindSchedule());
+
+			Assert.AreEqual(new Order{
+				origin = new Address{streetNr = "Laugavegur 26", city = "Reykjavík"}, 
+				destination = new Destination{addr = new Address{streetNr = "5th Street", city = "New York"}, deliver = DeliveryMethod.REGULAR}
+			}, store.getState());
+
+		}
 	}
+
 }
 
