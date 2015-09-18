@@ -62,20 +62,25 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
         }
 
 		[Test]
-		public void should_notify_subscribers(){
+		public void should_notify_subscribers_while_they_are_subscribed(){
 
 			var reducer = new Events<List<string>>();
 			var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
 
 			var changed = 0;
-			store.notifications += (state) => {
+			var unsub = store.subscribe((state) => {
 				Assert.NotNull (state);
 				changed += 1;
-			};
+			});
 
 			store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+			store.dispatch (new ItemAdded{item = "Read the Redux docs"});
 
-			Assert.That (changed, Is.EqualTo (1));
+			Assert.That (changed, Is.EqualTo (2));
+			unsub ();
+			store.dispatch (new ItemAdded{item = ""});
+
+			Assert.That (changed, Is.EqualTo (2));
 		}
 
     }
