@@ -5,6 +5,9 @@ using System;
 
 namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
+	public class ItemAdded : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
+		public String item;
+	}
 
     [TestFixture]
     public class StoreTests

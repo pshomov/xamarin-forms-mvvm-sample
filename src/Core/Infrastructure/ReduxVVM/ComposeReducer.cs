@@ -1,9 +1,9 @@
 using System;
-using NUnit.Framework;
 using System.Collections.Generic;
 using XamarinFormsTester.Infrastructure.ReduxVVM;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.Practices.ObjectBuilder2;
 
 namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
