@@ -26,8 +26,8 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 	{
 		[Test]
 		public void should_prvide_way_to_combine_reducers(){
-			var topicReducer = new Events<string> ().When<TopicSet> ((s, e) => e.topic).Get ();
-			var visibilityReducer = new Events<bool> ().When<FilterVisibility> ((s, e) => e.visible).Get ();
+			var topicReducer = new Events<string> ().When<TopicSet> ((s, e) => e.topic);
+			var visibilityReducer = new Events<bool> ().When<FilterVisibility> ((s, e) => e.visible);
 			var reducer = new ComposeReducer<AppStore> ()
 				.Part(s => s.redditTopic, topicReducer)
 				.Part(s => s.visibility, visibilityReducer)

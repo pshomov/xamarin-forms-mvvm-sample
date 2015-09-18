@@ -11,6 +11,10 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 	{
 		List<Tuple<FieldInfo, Delegate>> fieldReducers = new List<Tuple<FieldInfo, Delegate>>();
 
+		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, Events<T> reducer)
+		{
+			return Part<T> (composer, reducer.Get ());
+		}
 		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, Reducer<T> reducer)
 		{
 			var memberExpr = composer.Body as System.Linq.Expressions.MemberExpression;
