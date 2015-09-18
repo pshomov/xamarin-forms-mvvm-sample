@@ -30,8 +30,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 			var visibilityReducer = new Events<bool> ().When<FilterVisibility> ((s, e) => e.visible);
 			var reducer = new ComposeReducer<AppStore> ()
 				.Part(s => s.redditTopic, topicReducer)
-				.Part(s => s.visibility, visibilityReducer)
-				.Get();
+				.Part(s => s.visibility, visibilityReducer);
 			var store = new Store<AppStore>(reducer, new AppStore(){redditTopic = "react", visibility = false});
 			store.dispatch (new TopicSet{topic = "Redux is awesome"});
 			store.dispatch (new FilterVisibility{visible = true});

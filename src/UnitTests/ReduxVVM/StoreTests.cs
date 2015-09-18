@@ -54,8 +54,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
         [Test]
         public void should_return_same_state_when_command_not_for_that_reducer(){
 
-            var reducer = new Events<List<string>>()
-                .Get();
+            var reducer = new Events<List<string>>();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
             store.dispatch (new ItemAdded{item = "Read the Redux docs"});
 
