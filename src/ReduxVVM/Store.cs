@@ -1,7 +1,6 @@
 ﻿using System;
 using XamarinFormsTester.UnitTests.ReduxVVM;
 using System.Collections.Generic;
-using Microsoft.Practices.ObjectBuilder2;
 using System.Linq;
 
 namespace XamarinFormsTester.Infrastructure.ReduxVVM

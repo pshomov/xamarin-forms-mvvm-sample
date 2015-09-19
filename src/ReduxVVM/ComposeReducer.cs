@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using XamarinFormsTester.Infrastructure.ReduxVVM;
 using System.Linq.Expressions;
 using System.Reflection;
-using Microsoft.Practices.ObjectBuilder2;
 
 namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
@@ -39,13 +38,13 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		public XamarinFormsTester.Infrastructure.ReduxVVM.Reducer<State> Get(){
 			return delegate(State state, XamarinFormsTester.Infrastructure.ReduxVVM.Action action) {
 				var result = new State();
-				fieldReducers.ForEach(fieldReducer => {
+				foreach (var fieldReducer in fieldReducers) {
 					var prevState = fieldReducer.Item1.GetValue(state);
 					var newState = fieldReducer.Item2.DynamicInvoke(prevState, action);
 					object boxer = result; //boxing to allow the next line work for both reference and value objects
 					fieldReducer.Item1.SetValue(boxer, newState);
 					result = (State)boxer; // unbox, hopefully not too much performance penalty
-				});
+				}
 				return result;
 			};
 		}
