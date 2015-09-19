@@ -1,6 +1,8 @@
 ﻿using System;
 using XamarinFormsTester.UnitTests.ReduxVVM;
 using System.Collections.Generic;
+using Microsoft.Practices.ObjectBuilder2;
+using System.Linq;
 
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
@@ -11,7 +13,7 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 	public interface IStore<State>
 	{
 		unsubscribe subscribe (StateChanged<State> subscription);
-		void dispatch (Action action);
+		Action dispatch (Action action);
 		State getState ();
 	}
 
@@ -24,12 +26,13 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 			};
 		}
 
-        public void dispatch (Action action)
+        public Action dispatch (Action action)
         {
             this._state = rootReducer.Invoke (this._state, action);
 			foreach (var s in subscriptions) {
 				s.Invoke (this._state);
 			}
+			return action;
         }
 
         public State getState ()
@@ -49,5 +52,33 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 		State _state;
 		Reducer<State> rootReducer;
     }
+
+	public delegate Action MiddlewareExecutor(Action a);
+
+	public delegate MiddlewareExecutor MiddlewareChainer(MiddlewareExecutor next);
+
+	public delegate MiddlewareChainer Middleware<State>(IStore<State> store);
+
+	public class Middlewares<State> : IStore<State> where State : new(){
+		IStore<State> next;
+		MiddlewareExecutor middlewares;
+
+		public Middlewares(IStore<State> next, params Middleware<State>[] middlewares){
+			this.middlewares = middlewares.Select(m => m(next)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(next.dispatch, (acc, middle) => middle(acc));
+			this.next = next;
+		}
+		public unsubscribe subscribe (StateChanged<State> subscription)
+		{
+			return next.subscribe (subscription);
+		}
+		public Action dispatch (Action action)
+		{
+			return middlewares (action);
+		}
+		public State getState ()
+		{
+			return next.getState();
+		}
+	}
 }
 
