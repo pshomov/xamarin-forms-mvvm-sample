@@ -16,7 +16,7 @@ namespace XamarinFormsTester.UnitTests
 		public void should_allow_middleware_to_hook_into_dispatching(){
 			var storeReducerReached = 0;
 			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-			var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
+			var store = new Store<List<String>> (reducer, new List<string>{});
 			var middlewareCounter = 0;
 			var middleware = new Middlewares<List<String>> (store, 
 				s => next => action => {
