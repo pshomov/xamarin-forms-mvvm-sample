@@ -7,17 +7,7 @@ using System.Threading.Tasks;
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
     public interface Action {}
-    public class AsyncAction<Result> : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
-        Func<Func<XamarinFormsTester.Infrastructure.ReduxVVM.Action, XamarinFormsTester.Infrastructure.ReduxVVM.Action>, Task<Result>> dispatch;
-
-        public AsyncAction(Func<Func<XamarinFormsTester.Infrastructure.ReduxVVM.Action, XamarinFormsTester.Infrastructure.ReduxVVM.Action>, Task<Result>> dispatch){
-            this.dispatch = dispatch;
-        }
-
-        public Task<Result> get(Func<XamarinFormsTester.Infrastructure.ReduxVVM.Action, XamarinFormsTester.Infrastructure.ReduxVVM.Action> dispatcher){
-            return dispatch (dispatcher);
-        }
-    }
+    public delegate Task<Result> AsyncAction<Result>(Func<Action, Action> disp);
 
     public delegate State Reducer<State>(State state, Action action);
 	public delegate void StateChanged<State>(State state);
@@ -49,7 +39,7 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 
         public Task<T> dispatch<T> (AsyncAction<T> action)
         {
-            return action.get(this.dispatch);
+            return action.Invoke (this.dispatch);
         }
 
         public State getState ()
