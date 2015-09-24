@@ -32,10 +32,10 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 				.Part(s => s.redditTopic, topicReducer)
 				.Part(s => s.visibility, visibilityReducer);
 			var store = new Store<AppStore>(reducer, new AppStore(){redditTopic = "react", visibility = false});
-			store.dispatch (new TopicSet{topic = "Redux is awesome"});
-			store.dispatch (new FilterVisibility{visible = true});
+			store.Dispatch (new TopicSet{topic = "Redux is awesome"});
+			store.Dispatch (new FilterVisibility{visible = true});
 
-			Assert.AreEqual(new AppStore{redditTopic = "Redux is awesome", visibility = true}, store.getState());
+			Assert.AreEqual(new AppStore{redditTopic = "Redux is awesome", visibility = true}, store.GetState());
 
 		}
 
@@ -85,16 +85,16 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 				.Part(s => s.origin, originReducer)
 				.Part(s => s.destination, destinationReducer);
 			var store = new Store<Order>(orderReducer, new Order(){});
-			store.dispatch (new SetOrigin{newAddress = new Address{streetNr = "Laugavegur 26", city="Reykjavík"}});
-			store.dispatch (new SetDestination{newAddress = new Address{streetNr = "5th Street", city="New York"}});
-			store.dispatch (new SetDelivery{method = DeliveryMethod.GUARANTEED});
+			store.Dispatch (new SetOrigin{newAddress = new Address{streetNr = "Laugavegur 26", city="Reykjavík"}});
+			store.Dispatch (new SetDestination{newAddress = new Address{streetNr = "5th Street", city="New York"}});
+			store.Dispatch (new SetDelivery{method = DeliveryMethod.GUARANTEED});
 
-			store.dispatch (new BehindSchedule());
+			store.Dispatch (new BehindSchedule());
 
 			Assert.AreEqual(new Order{
 				origin = new Address{streetNr = "Laugavegur 26", city = "Reykjavík"}, 
 				destination = new Destination{addr = new Address{streetNr = "5th Street", city = "New York"}, deliver = DeliveryMethod.REGULAR}
-			}, store.getState());
+			}, store.GetState());
 
 		}
 	}

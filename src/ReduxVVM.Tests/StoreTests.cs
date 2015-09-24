@@ -30,9 +30,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
                 return newState;
             };
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+            store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
+            CollectionAssert.AreEqual(store.GetState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
 
         [Test]
@@ -46,9 +46,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
                 })
                 .Get();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+            store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
+            CollectionAssert.AreEqual(store.GetState(), new List<string>{"Use ReduxVVM", "Read the Redux docs"});
         }
 
         [Test]
@@ -56,9 +56,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 
             var reducer = new Events<List<string>>();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
-            store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+            store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
 
-            CollectionAssert.AreEqual(store.getState(), new List<string>{"Use ReduxVVM"});
+            CollectionAssert.AreEqual(store.GetState(), new List<string>{"Use ReduxVVM"});
         }
 
 		[Test]
@@ -68,17 +68,17 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 			var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
 
 			var changed = 0;
-			var unsub = store.subscribe((state) => {
+			var unsub = store.Subscribe((state) => {
 				Assert.NotNull (state);
 				changed += 1;
 			});
 
-			store.dispatch (new ItemAdded{item = "Read the Redux docs"});
-			store.dispatch (new ItemAdded{item = "Read the Redux docs"});
+			store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
+			store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
 
 			Assert.That (changed, Is.EqualTo (2));
 			unsub ();
-			store.dispatch (new ItemAdded{item = ""});
+			store.Dispatch (new ItemAdded{item = ""});
 
 			Assert.That (changed, Is.EqualTo (2));
 		}

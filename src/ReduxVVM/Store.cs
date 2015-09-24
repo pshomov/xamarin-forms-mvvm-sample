@@ -11,24 +11,24 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 
     public delegate State Reducer<State>(State state, Action action);
 	public delegate void StateChanged<State>(State state);
-	public delegate void unsubscribe();
+	public delegate void Unsubscribe();
 	public interface IStore<State>
 	{
-		unsubscribe subscribe (StateChanged<State> subscription);
-		Action dispatch (Action action);
-		State getState ();
+		Unsubscribe Subscribe (StateChanged<State> subscription);
+		Action Dispatch (Action action);
+		State GetState ();
 	}
 
 	public class Store<State> : IStore<State> where State : new()
     {
-		public unsubscribe subscribe(StateChanged<State> subscription){
+		public Unsubscribe Subscribe(StateChanged<State> subscription){
 			this.subscriptions.Add (subscription);
 			return () => {
 				subscriptions.Remove(subscription);
 			};
 		}
 
-        public Action dispatch (Action action)
+        public Action Dispatch (Action action)
         {
             this._state = rootReducer.Invoke (this._state, action);
 			foreach (var s in subscriptions) {
@@ -37,12 +37,12 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 			return action;
         }
 
-        public Task<T> dispatch<T> (AsyncAction<T> action)
+        public Task<T> Dispatch<T> (AsyncAction<T> action)
         {
-            return action.Invoke (this.dispatch);
+            return action.Invoke (this.Dispatch);
         }
 
-        public State getState ()
+        public State GetState ()
         {
             return _state;
         }
@@ -71,20 +71,20 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 		MiddlewareExecutor middlewares;
 
 		public Middlewares(IStore<State> next, params Middleware<State>[] middlewares){
-			this.middlewares = middlewares.Select(m => m(next)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(next.dispatch, (acc, middle) => middle(acc));
+			this.middlewares = middlewares.Select(m => m(next)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(next.Dispatch, (acc, middle) => middle(acc));
 			this.next = next;
 		}
-		public unsubscribe subscribe (StateChanged<State> subscription)
+		public Unsubscribe Subscribe (StateChanged<State> subscription)
 		{
-			return next.subscribe (subscription);
+			return next.Subscribe (subscription);
 		}
-		public Action dispatch (Action action)
+		public Action Dispatch (Action action)
 		{
 			return middlewares (action);
 		}
-		public State getState ()
+		public State GetState ()
 		{
-			return next.getState();
+			return next.GetState();
 		}
 	}
 }

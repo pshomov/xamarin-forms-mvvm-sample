@@ -16,7 +16,7 @@ namespace ReduxVVM.Tests
 			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer, new List<string>{});
 
-            var result = await store.dispatch (async dispatcher => {
+            var result = await store.Dispatch (async dispatcher => {
                 await Task.Delay(300);
                 dispatcher.Invoke(new SomeAction());
                 return 112;

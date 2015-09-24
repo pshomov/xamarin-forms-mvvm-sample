@@ -39,7 +39,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.dispatch (new SomeAction ());
+			middleware.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3333));
 			Assert.That(storeReducerReached, Is.EqualTo(1));
 		}
@@ -70,7 +70,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.dispatch (new SomeAction ());
+			middleware.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3003));
 			Assert.That(storeReducerReached, Is.EqualTo(0));
 		}
@@ -99,7 +99,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.dispatch (new SomeAction ());
+			middleware.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3333));
 			Assert.That(storeReducerReached, Is.EqualTo(0));
 		}	
