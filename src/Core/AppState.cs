@@ -3,12 +3,9 @@ using Xamarin.Forms;
 
 namespace XamarinFormsTester
 {
-	public class AppState
+	public struct AppState
 	{
-        public bool LoggedIn {
-            get;
-            set;
-        }
+        public bool LoggedIn;
 	}
 
 }
