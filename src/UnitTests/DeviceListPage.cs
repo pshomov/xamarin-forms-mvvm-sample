@@ -23,11 +23,8 @@ namespace XamarinFormsTester.UnitTests
         public void SetUp ()
         {
             nav = Substitute.For<INavigator> ();
-            container = new UnityContainer ();
-            container.RegisterInstance (nav);
             serviceAPI = Substitute.For<IServiceAPI> ();
-            container.RegisterInstance (serviceAPI);
-            app = container.Resolve<AppModel> ();
+            app = new AppModel (nav, serviceAPI);
         }
 
         [Test]
