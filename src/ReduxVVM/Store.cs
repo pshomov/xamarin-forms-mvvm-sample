@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
     public interface Action {}
-    public delegate Task<Result> AsyncAction<Result, State>(Func<Action, Action> disp, Func<State> getState);
 
     public delegate State Reducer<State>(State state, Action action);
 	public delegate void StateChanged<State>(State state);
 	public delegate void Unsubscribe();
+    public delegate Action DispatcherDelegate(Action a);
+
 	public interface IStore<State>
 	{
 		Unsubscribe Subscribe (StateChanged<State> subscription);
@@ -21,7 +22,9 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 
 	public class Store<State> : IStore<State> where State : new()
     {
-		public Unsubscribe Subscribe(StateChanged<State> subscription){
+        public delegate State StoreDelegate();
+
+        public Unsubscribe Subscribe(StateChanged<State> subscription){
 			this.subscriptions.Add (subscription);
 			return () => {
 				subscriptions.Remove(subscription);
@@ -36,11 +39,31 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 			}
 			return action;
         }
-
-        public Task<T> Dispatch<T> (AsyncAction<T, State> action)
+            
+        public Task<Result> Dispatch<Result> (Func<DispatcherDelegate, StoreDelegate, Task<Result>> actionWithParams)
         {
-            return action.Invoke (this.Dispatch, this.GetState);
+            return actionWithParams(this.Dispatch, this.GetState);
         }
+
+        public Task Dispatch (Func<DispatcherDelegate, StoreDelegate, Task> actionWithParams)
+        {
+            return actionWithParams(this.Dispatch, this.GetState);
+        }
+
+        public Func<T, Func<DispatcherDelegate, StoreDelegate, Task<Result>>> asyncAction<T, Result> (Func<DispatcherDelegate, StoreDelegate, T, Task<Result>> m){
+            return a => (dispatch, getState) => m (dispatch, getState, a);
+        }   
+
+        public Func<T, Func<DispatcherDelegate, StoreDelegate, Task>> asyncAction<T, Result> (Func<DispatcherDelegate, StoreDelegate, T, Task> m){
+            return a => (dispatch, getState) => m (dispatch, getState, a);
+        }   
+
+        public Func<DispatcherDelegate, StoreDelegate, Task> asyncAction (Func<DispatcherDelegate, StoreDelegate, Task> m){
+            return (dispatch, getState) => m (dispatch, getState);
+        }   
+        public Func<DispatcherDelegate, StoreDelegate, Task<Result>> asyncAction<Result> (Func<DispatcherDelegate, StoreDelegate, Task<Result>> m){
+            return (dispatch, getState) => m (dispatch, getState);
+        }   
 
         public State GetState ()
         {
