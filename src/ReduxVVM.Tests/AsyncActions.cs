@@ -4,7 +4,6 @@ using XamarinFormsTester.Infrastructure.ReduxVVM;
 using XamarinFormsTester.UnitTests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using XamarinFormsTester;
 
 namespace ReduxVVM.Tests
 {
