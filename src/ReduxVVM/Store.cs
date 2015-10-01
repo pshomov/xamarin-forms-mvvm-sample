@@ -33,9 +33,9 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 
         public Action Dispatch (Action action)
         {
-            this._state = rootReducer.Invoke (this._state, action);
+            this._state = rootReducer(this._state, action);
 			foreach (var s in subscriptions) {
-				s.Invoke (this._state);
+				s (this._state);
 			}
 			return action;
         }

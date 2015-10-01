@@ -7,50 +7,59 @@ using System.Threading.Tasks;
 
 namespace ReduxVVM.Tests
 {
-    public struct LoginInfo {
+    public struct LoginInfo
+    {
         public string username;
     }
 
-	[TestFixture]
-	public class AsyncActions
-	{
+    [TestFixture]
+    public class AsyncActions
+    {
         [Test]
-		public async void should_allow_for_async_execution_of_code(){
-			var storeReducerReached = 0;
-			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-			var store = new Store<List<String>> (reducer, new List<string>{ "a"});
+        public async void should_allow_for_async_execution_of_code ()
+        {
+            var storeReducerReached = 0;
+            var reducer = new Events<List<string>> ().When<SomeAction> ((s, e) => {
+                storeReducerReached += 1;
+                return s;
+            });
+            var store = new Store<List<String>> (reducer, new List<string>{ "a" });
 
-            var result = await store.Dispatch (store.asyncAction<int>(async (dispatcher, store2) => {
-                await Task.Delay(300);
-                Assert.That(store2()[0], Is.EqualTo("a"));
-                dispatcher.Invoke(new SomeAction());
+            var result = await store.Dispatch (store.asyncAction<int> (async (dispatcher, store2) => {
+                await Task.Delay (300);
+                Assert.That (store2 ()[0], Is.EqualTo ("a"));
+                dispatcher (new SomeAction ());
                 return 112;
             }));
 
-            Assert.That(storeReducerReached, Is.EqualTo(1));
-            Assert.That(result, Is.EqualTo(112));
-		}
+            Assert.That (storeReducerReached, Is.EqualTo (1));
+            Assert.That (result, Is.EqualTo (112));
+        }
 
         [Test]
-        public async void should_allow_for_passing_parameters_to_async_actions(){
+        public async void should_allow_for_passing_parameters_to_async_actions ()
+        {
             var storeReducerReached = 0;
-            var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-            var store = new Store<List<String>> (reducer, new List<string>{ "a"});
+            var reducer = new Events<List<string>> ().When<SomeAction> ((s, e) => {
+                storeReducerReached += 1;
+                return s;
+            });
+            var store = new Store<List<String>> (reducer, new List<string>{ "a" });
 
-            var action1 = store.asyncAction<LoginInfo,int>(async (dispatcher, store2, msg) => {
+            var action1 = store.asyncAction<LoginInfo,int> (async (dispatcher, store2, msg) => {
                 await Task.Delay (300);
-                Assert.That(msg.username, Is.EqualTo("John"));
-                dispatcher.Invoke (new SomeAction ());
+                Assert.That (msg.username, Is.EqualTo ("John"));
+                dispatcher (new SomeAction ());
                 return 112;
             });
-            var result = await store.Dispatch(action1 (new LoginInfo {
+            var result = await store.Dispatch (action1 (new LoginInfo {
                 username = "John"
             }));
 
-            Assert.That(storeReducerReached, Is.EqualTo(1));
-            Assert.That(result, Is.EqualTo(112));
+            Assert.That (storeReducerReached, Is.EqualTo (1));
+            Assert.That (result, Is.EqualTo (112));
         }
 
-	}
+    }
 }
 
