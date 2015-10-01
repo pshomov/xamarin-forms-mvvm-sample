@@ -30,6 +30,7 @@ namespace XamarinFormsTester.UnitTests
         public void SetUp ()
         {
             nav = Substitute.For<INavigator> ();
+            nav.PushAsync<Object> ().Returns (Task.Delay(0));
             serviceAPI = Substitute.For<IServiceAPI> ();
 
             var loginReducer = new Events<LoginPageStore> ().When<LoginStarted> ((s,a) => {
@@ -71,13 +72,12 @@ namespace XamarinFormsTester.UnitTests
             var done = await store.Dispatch (async (disp, getState) => {
                 disp(new LoginStarted());
                 if (!getState().loginPage.LoggedIn) 
-                    nav.PushAsync<LoginPageViewModel>();
+                    return nav.PushAsync<LoginPageViewModel>();
                 else 
-                    nav.PushAsync<DeviceListPageViewModel>();
-                return true;
+                    return nav.PushAsync<DeviceListPageViewModel>();
             });
 
-            Assert.That (done, Is.True);
+            Assert.That (done, Is.TypeOf<Task>());
             nav.Received().PushAsync<LoginPageViewModel> ();
 
         }
