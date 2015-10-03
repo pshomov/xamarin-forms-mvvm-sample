@@ -64,9 +64,6 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
             return a => (dispatch, getState) => m (dispatch, getState, a);
         }   
 
-        public Func<DispatcherDelegate, StoreDelegate, Task> asyncAction (Func<DispatcherDelegate, StoreDelegate, Task> m){
-            return (dispatch, getState) => m (dispatch, getState);
-        }   
         public Func<DispatcherDelegate, StoreDelegate, Task<Result>> asyncAction<Result> (Func<DispatcherDelegate, StoreDelegate, Task<Result>> m){
             return (dispatch, getState) => m (dispatch, getState);
         }   

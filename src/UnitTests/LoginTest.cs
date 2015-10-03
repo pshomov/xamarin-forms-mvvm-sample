@@ -84,11 +84,11 @@ namespace XamarinFormsTester.UnitTests
                 dispatch (new LoggedIn{ Username = userinfo.Username, City = loggedIn.HomeCity });
                 nav.PushAsync<DeviceListPageViewModel> ();
             });
-            DeviceListRefreshAction = store.asyncAction (async (dispatch, getState) => {
+            DeviceListRefreshAction = async (dispatch, getState) => {
                 dispatch (new DeviceListRefreshStarted());
                 var devices = await serviceAPI.GetDevices();
                 dispatch (new DeviceListRefreshFinished {Devices = devices});
-            });
+            };
             return store;
         }
 
@@ -130,12 +130,12 @@ namespace XamarinFormsTester.UnitTests
 
         [Test]
         public async void should_navigate_to_login_viewmode_when_not_logged_in(){
-            await store.Dispatch (store.asyncAction((disp, getState) => {
+            await store.Dispatch ((disp, getState) => {
                 if (!getState().LoginPage.LoggedIn) 
                     return nav.PushAsync<LoginPageViewModel>();
                 else 
                     return nav.PushAsync<DeviceListPageViewModel>();
-            }));
+            });
 
             nav.Received().PushAsync<LoginPageViewModel> ();
         }
