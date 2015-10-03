@@ -19,7 +19,7 @@ namespace ReduxVVM.Tests
         public async void should_allow_for_async_execution_of_code ()
         {
             var storeReducerReached = 0;
-            var reducer = new Events<List<string>> ().When<SomeAction> ((s, e) => {
+            var reducer = new SimpleReducer<List<string>> ().When<SomeAction> ((s, e) => {
                 storeReducerReached += 1;
                 return s;
             });
@@ -40,7 +40,7 @@ namespace ReduxVVM.Tests
         public async void should_allow_for_passing_parameters_to_async_actions ()
         {
             var storeReducerReached = 0;
-            var reducer = new Events<List<string>> ().When<SomeAction> ((s, e) => {
+            var reducer = new SimpleReducer<List<string>> ().When<SomeAction> ((s, e) => {
                 storeReducerReached += 1;
                 return s;
             });

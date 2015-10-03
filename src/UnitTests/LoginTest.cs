@@ -45,7 +45,7 @@ namespace XamarinFormsTester.UnitTests
 
         Store<AppState> store;
 
-        ComposeReducer<AppState> reducer;
+        CompositeReducer<AppState> reducer;
 
         List<LoggedAction<AppState>> history = new List<LoggedAction<AppState>>();
 
@@ -53,7 +53,7 @@ namespace XamarinFormsTester.UnitTests
         Func<DispatcherDelegate, Store<AppState>.StoreDelegate, Task> DeviceListRefreshAction;
 
         public Store<AppState> WireUpApp(){
-            var loginReducer = new Events<LoginPageStore> ()
+            var loginReducer = new SimpleReducer<LoginPageStore> ()
                 .When<LoggingIn> ((s, a) => {
                     s.inProgress = true;
                     return s;
@@ -62,7 +62,7 @@ namespace XamarinFormsTester.UnitTests
                     s.inProgress = false;
                     return s;
                 });
-            var deviceList = new Events<DeviceListPageStore> ()
+            var deviceList = new SimpleReducer<DeviceListPageStore> ()
                 .When<DeviceListRefreshStarted>((state, action) => {
                     state.Devices = new List<DeviceInfo>();
                     state.inProgress = true;
@@ -73,7 +73,7 @@ namespace XamarinFormsTester.UnitTests
                     state.inProgress = false;
                     return state;
                 });
-            reducer = new ComposeReducer<AppState> ()
+            reducer = new CompositeReducer<AppState> ()
                 .Part (s => s.LoginPage, loginReducer)
                 .Part (s => s.DevicePage, deviceList);
 

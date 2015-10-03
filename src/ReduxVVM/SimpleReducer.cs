@@ -4,10 +4,10 @@ using System;
 
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
-	public class Events<State>
+	public class SimpleReducer<State>
 	{
         Dictionary<Type, Delegate> handlers = new Dictionary<Type, Delegate> ();
-        public Events<State> When<Event>(Func<State, Event, State> handler) where Event : XamarinFormsTester.Infrastructure.ReduxVVM.Action, new() {
+        public SimpleReducer<State> When<Event>(Func<State, Event, State> handler) where Event : XamarinFormsTester.Infrastructure.ReduxVVM.Action, new() {
             handlers.Add (typeof(Event), handler);
             return this;
         }

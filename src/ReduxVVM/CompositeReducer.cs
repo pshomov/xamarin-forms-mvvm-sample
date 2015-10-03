@@ -6,19 +6,19 @@ using System.Reflection;
 
 namespace XamarinFormsTester.UnitTests.ReduxVVM
 {
-	public class ComposeReducer<State> where State : new()
+	public class CompositeReducer<State> where State : new()
 	{
 		List<Tuple<FieldInfo, Delegate>> fieldReducers = new List<Tuple<FieldInfo, Delegate>>();
 
-		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, Events<T> reducer)
+		public CompositeReducer<State> Part<T> (Expression<Func<State, T>> composer, SimpleReducer<T> reducer)
 		{
 			return Part<T> (composer, reducer.Get ());
 		}
-		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, ComposeReducer<T> reducer) where T : new()
+		public CompositeReducer<State> Part<T> (Expression<Func<State, T>> composer, CompositeReducer<T> reducer) where T : new()
 		{
 			return Part<T> (composer, reducer.Get ());
 		}
-		public ComposeReducer<State> Part<T> (Expression<Func<State, T>> composer, Reducer<T> reducer)
+		public CompositeReducer<State> Part<T> (Expression<Func<State, T>> composer, Reducer<T> reducer)
 		{
 			var memberExpr = composer.Body as System.Linq.Expressions.MemberExpression;
 			var member = (FieldInfo)memberExpr.Member;
@@ -50,8 +50,6 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		}
 
 	}
-
-
 	
 }
 

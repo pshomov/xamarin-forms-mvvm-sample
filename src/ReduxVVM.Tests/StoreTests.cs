@@ -38,7 +38,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
         [Test]
         public void should_register_root_reducer_with_builder(){
 
-            var reducer = new Events<List<string>>()
+            var reducer = new SimpleReducer<List<string>>()
                 .When<ItemAdded>((state, action) => {
                     var newSatte = new List<String> (state);
                     newSatte.Add(action.item);
@@ -54,7 +54,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
         [Test]
         public void should_return_same_state_when_command_not_for_that_reducer(){
 
-            var reducer = new Events<List<string>>();
+            var reducer = new SimpleReducer<List<string>>();
             var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
             store.Dispatch (new ItemAdded{item = "Read the Redux docs"});
 
@@ -64,7 +64,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		[Test]
 		public void should_notify_subscribers_while_they_are_subscribed(){
 
-			var reducer = new Events<List<string>>();
+			var reducer = new SimpleReducer<List<string>>();
 			var store = new Store<List<String>> (reducer, new List<string>{ "Use ReduxVVM" });
 
 			var changed = 0;

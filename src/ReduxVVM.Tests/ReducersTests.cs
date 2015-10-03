@@ -26,9 +26,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 	{
 		[Test]
 		public void should_prvide_way_to_combine_reducers(){
-			var topicReducer = new Events<string> ().When<TopicSet> ((s, e) => e.topic);
-			var visibilityReducer = new Events<bool> ().When<FilterVisibility> ((s, e) => e.visible);
-			var reducer = new ComposeReducer<AppStore> ()
+			var topicReducer = new SimpleReducer<string> ().When<TopicSet> ((s, e) => e.topic);
+			var visibilityReducer = new SimpleReducer<bool> ().When<FilterVisibility> ((s, e) => e.visible);
+			var reducer = new CompositeReducer<AppStore> ()
 				.Part(s => s.redditTopic, topicReducer)
 				.Part(s => s.visibility, visibilityReducer);
 			var store = new Store<AppStore>(reducer, new AppStore(){redditTopic = "react", visibility = false});
@@ -77,11 +77,11 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 
 		[Test]
 		public void should_prvide_way_to_create_deep_hierarchy_of_reducers(){
-			var originReducer = new Events<Address> ().When<SetOrigin> ((s, e) => e.newAddress);
-			var destinationReducer = new ComposeReducer<Destination> ()
-				.Part (s => s.deliver, new Events<DeliveryMethod> ().When<BehindSchedule>((s, a) => DeliveryMethod.REGULAR).When<SetDelivery>((_, a) => a.method))
-				.Part (s => s.addr, new Events<Address> ().When<SetDestination>((s,a) => a.newAddress));
-			var orderReducer = new ComposeReducer<Order> ()
+			var originReducer = new SimpleReducer<Address> ().When<SetOrigin> ((s, e) => e.newAddress);
+			var destinationReducer = new CompositeReducer<Destination> ()
+				.Part (s => s.deliver, new SimpleReducer<DeliveryMethod> ().When<BehindSchedule>((s, a) => DeliveryMethod.REGULAR).When<SetDelivery>((_, a) => a.method))
+				.Part (s => s.addr, new SimpleReducer<Address> ().When<SetDestination>((s,a) => a.newAddress));
+			var orderReducer = new CompositeReducer<Order> ()
 				.Part(s => s.origin, originReducer)
 				.Part(s => s.destination, destinationReducer);
 			var store = new Store<Order>(orderReducer, new Order(){});

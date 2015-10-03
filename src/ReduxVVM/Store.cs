@@ -80,8 +80,8 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
             this.middlewares = middlewares.Select(m => m(this)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(StoreDispatch, (acc, middle) => middle(acc));
         }
 
-		public Store (Events<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
-		public Store (ComposeReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
+		public Store (SimpleReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
+		public Store (CompositeReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
         public Store (Reducer<State> rootReducer, State initialState)
         {
             this.rootReducer = rootReducer;
