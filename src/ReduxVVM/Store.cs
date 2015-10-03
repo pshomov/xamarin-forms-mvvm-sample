@@ -16,36 +16,51 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 	public interface IStore<State>
 	{
 		Unsubscribe Subscribe (StateChanged<State> subscription);
-		Action StoreDispatch (Action action);
+		Action Dispatch (Action action);
 		State GetState ();
 	}
-
-	public class Store<State> : IStore<State> where State : new()
+        
+	public class Store<State> where State : new()
     {
+        class SyncStore<State> : IStore<State> where State : new() {
+            public SyncStore (Reducer<State> rootReducer, State initialState)
+            {
+                this.rootReducer = rootReducer;
+                this._state = initialState;
+            }
+
+            public Unsubscribe Subscribe(StateChanged<State> subscription){
+                this.subscriptions.Add (subscription);
+                return () => {
+                    subscriptions.Remove(subscription);
+                };
+            }
+            public Action Dispatch (Action action)
+            {
+                this._state = rootReducer(this._state, action);
+                foreach (var s in subscriptions) {
+                    s (this._state);
+                }
+                return action;
+            }
+            public State GetState ()
+            {
+                return _state;
+            }
+            List<StateChanged<State>> subscriptions = new List<StateChanged<State>>();
+            State _state;
+            Reducer<State> rootReducer;
+        }
         MiddlewareExecutor middlewares;
         public delegate State StoreDelegate();
 
-        public Unsubscribe Subscribe(StateChanged<State> subscription){
-			this.subscriptions.Add (subscription);
-			return () => {
-				subscriptions.Remove(subscription);
-			};
-		}
+        public Unsubscribe Subscribe(StateChanged<State> subscription) { return store.Subscribe (subscription); }
 
         public Action Dispatch (Action action)
         {
             return middlewares (action);
         }
-
-        public Action StoreDispatch (Action action)
-        {
-            this._state = rootReducer(this._state, action);
-            foreach (var s in subscriptions) {
-                s (this._state);
-            }
-            return action;
-        }
-
+            
         public Task<Result> Dispatch<Result> (Func<DispatcherDelegate, StoreDelegate, Task<Result>> actionWithParams)
         {
             return actionWithParams(this.Dispatch, this.GetState);
@@ -68,27 +83,21 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
             return (dispatch, getState) => m (dispatch, getState);
         }   
 
-        public State GetState ()
-        {
-            return _state;
-        }
+        public State GetState (){ return store.GetState ();}
 
         public void Middlewares(params Middleware<State>[] middlewares){
-            this.middlewares = middlewares.Select(m => m(this)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(StoreDispatch, (acc, middle) => middle(acc));
+            this.middlewares = middlewares.Select(m => m(store)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(store.Dispatch, (acc, middle) => middle(acc));
         }
 
 		public Store (SimpleReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
 		public Store (CompositeReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
         public Store (Reducer<State> rootReducer, State initialState)
         {
-            this.rootReducer = rootReducer;
-            this._state = initialState;
+            store = new SyncStore<State> (rootReducer, initialState);
             this.Middlewares ();
         }
 
-		List<StateChanged<State>> subscriptions = new List<StateChanged<State>>();
-		State _state;
-		Reducer<State> rootReducer;
+        SyncStore<State> store;
     }
 
 	public delegate Action MiddlewareExecutor(Action a);
