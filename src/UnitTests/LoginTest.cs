@@ -26,6 +26,10 @@ namespace XamarinFormsTester.UnitTests
         public string Username;
     }
 
+    public class LoggedAction<S> {
+        public S StateAfter;
+        public XamarinFormsTester.Infrastructure.ReduxVVM.Action Action;
+    }
 
     [TestFixture]
     public class LoginTest
@@ -38,7 +42,24 @@ namespace XamarinFormsTester.UnitTests
 
         ComposeReducer<AppState> reducer;
 
-        List<Tuple<XamarinFormsTester.Infrastructure.ReduxVVM.Action, AppState>> history;
+        List<LoggedAction<AppState>> history = new List<LoggedAction<AppState>>();
+
+        public Store<AppState> WireUpApp(){
+            var loginReducer = new Events<LoginPageStore> ()
+                .When<LoggingIn> ((s, a) => {
+                    s.inProgress = true;
+                    return s;
+                })
+                .When<LoggedIn> ((s, a) => {
+                    s.inProgress = false;
+                    return s;
+                });
+            reducer = new ComposeReducer<AppState> ()
+                .Part (s => s.loginPage, loginReducer);
+
+            store = new Store<AppState> (reducer, new AppState());
+            return store;
+        }
 
         [SetUp]
         public void SetUp ()
@@ -48,25 +69,12 @@ namespace XamarinFormsTester.UnitTests
             serviceAPI = Substitute.For<IServiceAPI> ();
             serviceAPI.AuthUser ("john", "secret").Returns(Task.FromResult(new UserInfo{Username = "John", HomeCity="Reykjavik"}));
 
-            var loginReducer = new Events<LoginPageStore> ()
-            .When<LoggingIn> ((s, a) => {
-                s.inProgress = true;
-                return s;
-            })
-            .When<LoggedIn> ((s, a) => {
-                s.inProgress = false;
-                return s;
-            });
-            reducer = new ComposeReducer<AppState> ()
-                .Part (s => s.loginPage, loginReducer);
-
-            history = new List<Tuple<XamarinFormsTester.Infrastructure.ReduxVVM.Action, AppState>> ();
-            store = new Store<AppState> (reducer, new AppState());
+            store = WireUpApp ();
             store.Middlewares (s => next => action => {
                 var before = s.GetState ();
                 var res = next (action);
                 var after = s.GetState ();
-                history.Add (Tuple.Create (action, after));
+                history.Add (new LoggedAction<AppState>{Action = action, StateAfter = after});
                 return res;
             });
         }
@@ -102,8 +110,8 @@ namespace XamarinFormsTester.UnitTests
             await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
 
             nav.Received().PushAsync<DeviceListPageViewModel> ();
-            Assert.That (history.Find(a => a.Item1.GetType() == typeof(LoggingIn)).Item2.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
-            Assert.That (history.Find(a => a.Item1.GetType() == typeof(LoggedIn)).Item2.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggingIn)).StateAfter.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggedIn)).StateAfter.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
         }
 
     }
