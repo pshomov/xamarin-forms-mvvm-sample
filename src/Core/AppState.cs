@@ -1,5 +1,6 @@
 using System;
 using Xamarin.Forms;
+using System.Collections.Generic;
 
 namespace XamarinFormsTester
 {
@@ -9,9 +10,15 @@ namespace XamarinFormsTester
         public string errMsg;
         public bool inProgress;
     }
+    public struct DeviceListPageStore {
+        public bool inProgress;
+        public List<DeviceInfo> Devices;
+        public String Error;
+    }
 	public struct AppState
 	{
-        public LoginPageStore loginPage;
+        public LoginPageStore LoginPage;
+        public DeviceListPageStore DevicePage;
 	}
 
 }

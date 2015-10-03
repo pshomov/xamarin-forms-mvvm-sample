@@ -7,11 +7,16 @@ using XamarinFormsTester.UnitTests.ReduxVVM;
 using XamarinFormsTester.ViewModels;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 #pragma warning disable 4014 1998
 namespace XamarinFormsTester.UnitTests
 {
     public class AppStart : XamarinFormsTester.Infrastructure.ReduxVVM.Action {}
+    public class DeviceListRefreshStarted : XamarinFormsTester.Infrastructure.ReduxVVM.Action {}
+    public class DeviceListRefreshFinished : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
+        public List<DeviceInfo> Devices;
+    }
 
     public struct LoginInfo {
         public string Username;
@@ -44,6 +49,9 @@ namespace XamarinFormsTester.UnitTests
 
         List<LoggedAction<AppState>> history = new List<LoggedAction<AppState>>();
 
+        Func<LoginInfo, Func<DispatcherDelegate, Store<AppState>.StoreDelegate, Task>> LoginAction;
+        Func<DispatcherDelegate, Store<AppState>.StoreDelegate, Task> DeviceListRefreshAction;
+
         public Store<AppState> WireUpApp(){
             var loginReducer = new Events<LoginPageStore> ()
                 .When<LoggingIn> ((s, a) => {
@@ -54,11 +62,47 @@ namespace XamarinFormsTester.UnitTests
                     s.inProgress = false;
                     return s;
                 });
+            var deviceList = new Events<DeviceListPageStore> ()
+                .When<DeviceListRefreshStarted>((state, action) => {
+                    state.Devices = new List<DeviceInfo>();
+                    state.inProgress = true;
+                    return state;
+                })
+                .When<DeviceListRefreshFinished>((state, action) => {
+                    state.Devices = new List<DeviceInfo>(action.Devices);
+                    state.inProgress = false;
+                    return state;
+                });
             reducer = new ComposeReducer<AppState> ()
-                .Part (s => s.loginPage, loginReducer);
+                .Part (s => s.LoginPage, loginReducer)
+                .Part (s => s.DevicePage, deviceList);
 
             store = new Store<AppState> (reducer, new AppState());
+            LoginAction = store.asyncActionVoid<LoginInfo> (async (dispatch, getState, userinfo) => {
+                dispatch (new LoggingIn{ Username = userinfo.Username });
+                var loggedIn = await serviceAPI.AuthUser (userinfo.Username, userinfo.Password);
+                dispatch (new LoggedIn{ Username = userinfo.Username, City = loggedIn.HomeCity });
+                nav.PushAsync<DeviceListPageViewModel> ();
+            });
+            DeviceListRefreshAction = store.asyncAction (async (dispatch, getState) => {
+                dispatch (new DeviceListRefreshStarted());
+                var devices = await serviceAPI.GetDevices();
+                dispatch (new DeviceListRefreshFinished {Devices = devices});
+            });
             return store;
+        }
+
+        Middleware<AppState> logger()
+        {
+            return s => next => action =>  {
+                var res = next (action);
+                var after = s.GetState ();
+                history.Add (new LoggedAction<AppState> {
+                    Action = action,
+                    StateAfter = after
+                });
+                return res;
+            };
         }
 
         [SetUp]
@@ -68,15 +112,12 @@ namespace XamarinFormsTester.UnitTests
             nav.PushAsync<Object> ().Returns (Task.Delay(0));
             serviceAPI = Substitute.For<IServiceAPI> ();
             serviceAPI.AuthUser ("john", "secret").Returns(Task.FromResult(new UserInfo{Username = "John", HomeCity="Reykjavik"}));
+            serviceAPI.GetDevices ().Returns (Task.FromResult(new List<DeviceInfo>(){
+                new DeviceInfo{Id = new DeviceId("1"), Name = "D1", Online = true}
+            }));
 
             store = WireUpApp ();
-            store.Middlewares (s => next => action => {
-                var before = s.GetState ();
-                var res = next (action);
-                var after = s.GetState ();
-                history.Add (new LoggedAction<AppState>{Action = action, StateAfter = after});
-                return res;
-            });
+            store.Middlewares (logger ());
         }
 
         [Test]
@@ -90,7 +131,7 @@ namespace XamarinFormsTester.UnitTests
         [Test]
         public async void should_navigate_to_login_viewmode_when_not_logged_in(){
             await store.Dispatch (store.asyncAction((disp, getState) => {
-                if (!getState().loginPage.LoggedIn) 
+                if (!getState().LoginPage.LoggedIn) 
                     return nav.PushAsync<LoginPageViewModel>();
                 else 
                     return nav.PushAsync<DeviceListPageViewModel>();
@@ -100,18 +141,23 @@ namespace XamarinFormsTester.UnitTests
         }
 
         [Test]
-        public async void should_start_login_process_when_provided_username_password(){
-            var LoginAction = store.asyncActionVoid<LoginInfo> (async (disp, getState, userinfo) =>  {
-                disp(new LoggingIn{Username = userinfo.Username});
-                var loggedIn = await serviceAPI.AuthUser (userinfo.Username, userinfo.Password);
-                disp(new LoggedIn{Username = userinfo.Username, City = loggedIn.HomeCity});
-                nav.PushAsync<DeviceListPageViewModel>();
-            });
+        public async void should_perform_login_process_when_provided_username_password_and_navigate_to_device_list_view(){
             await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
 
             nav.Received().PushAsync<DeviceListPageViewModel> ();
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggingIn)).StateAfter.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggedIn)).StateAfter.loginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggingIn)).StateAfter.LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggedIn)).StateAfter.LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
+        }
+
+        [Test]
+        public async void should_retrieve_device_list_when_device_refresh_is_requested(){
+            await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
+            await store.Dispatch (DeviceListRefreshAction);
+
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(DeviceListRefreshStarted)).StateAfter.DevicePage.inProgress, Is.EqualTo (true));
+            Assert.That (history.Find(a => a.Action.GetType() == typeof(DeviceListRefreshFinished)).StateAfter.DevicePage.Devices, Is.EquivalentTo(new List<DeviceInfo>(){
+                new DeviceInfo{Id = new DeviceId("1"), Name = "D1", Online = true}
+            }));
         }
 
     }

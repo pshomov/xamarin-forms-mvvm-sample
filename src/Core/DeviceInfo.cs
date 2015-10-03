@@ -110,7 +110,7 @@ namespace XamarinFormsTester
         }
 
     }
-    public class DeviceInfo {
+    public struct DeviceInfo {
         public String Name { get; set;}
         public String Location { get; set;}
         public Boolean Online { get; set;}
