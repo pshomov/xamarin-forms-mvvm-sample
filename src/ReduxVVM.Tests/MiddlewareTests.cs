@@ -18,7 +18,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer, new List<string>{});
 			var middlewareCounter = 0;
-			var middleware = new Middlewares<List<String>> (store, 
+            store.Middlewares( 
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
@@ -30,7 +30,7 @@ namespace XamarinFormsTester.UnitTests
 				s => next => action => {
 					middlewareCounter += 30;
 					Assert.That(middlewareCounter, Is.EqualTo(33));
-					Assert.That(storeReducerReached, Is.EqualTo(0));
+                    Assert.That(storeReducerReached, Is.EqualTo(0));
 					var res = next(action);
 					Assert.That(storeReducerReached, Is.EqualTo(1));
 					middlewareCounter += 300;
@@ -39,7 +39,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.Dispatch (new SomeAction ());
+			store.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3333));
 			Assert.That(storeReducerReached, Is.EqualTo(1));
 		}
@@ -50,7 +50,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer, new List<string>{});
 			var middlewareCounter = 0;
-			var middleware = new Middlewares<List<String>> (store, 
+            store.Middlewares(
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
@@ -70,7 +70,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.Dispatch (new SomeAction ());
+            store.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3003));
 			Assert.That(storeReducerReached, Is.EqualTo(0));
 		}
@@ -81,7 +81,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new Events<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer, new List<string>{});
 			var middlewareCounter = 0;
-			var middleware = new Middlewares<List<String>> (store, 
+            store.Middlewares(
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
@@ -99,7 +99,7 @@ namespace XamarinFormsTester.UnitTests
 				}
 			);
 
-			middleware.Dispatch (new SomeAction ());
+            store.Dispatch (new SomeAction ());
 			Assert.That (middlewareCounter, Is.EqualTo (3333));
 			Assert.That(storeReducerReached, Is.EqualTo(0));
 		}	
