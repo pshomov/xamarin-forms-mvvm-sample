@@ -12,6 +12,15 @@ using System.Linq;
 #pragma warning disable 4014 1998
 namespace XamarinFormsTester.UnitTests
 {
+    public class LoggedAction<S> {
+        public S StateAfter;
+        public XamarinFormsTester.Infrastructure.ReduxVVM.Action Action;
+    }
+    public static class TestHelpers {
+        public static T FirstAction<T>(this List<LoggedAction<T>> history, Type action) {
+            return history.Find (a => a.Action.GetType () == action).StateAfter;
+        }
+    }
     public class AppStart : XamarinFormsTester.Infrastructure.ReduxVVM.Action {}
     public class DeviceListRefreshStarted : XamarinFormsTester.Infrastructure.ReduxVVM.Action {}
     public class DeviceListRefreshFinished : XamarinFormsTester.Infrastructure.ReduxVVM.Action {
@@ -31,10 +40,6 @@ namespace XamarinFormsTester.UnitTests
         public string Username;
     }
 
-    public class LoggedAction<S> {
-        public S StateAfter;
-        public XamarinFormsTester.Infrastructure.ReduxVVM.Action Action;
-    }
 
     [TestFixture]
     public class LoginTest
@@ -145,8 +150,8 @@ namespace XamarinFormsTester.UnitTests
             await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
 
             nav.Received().PushAsync<DeviceListPageViewModel> ();
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggingIn)).StateAfter.LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(LoggedIn)).StateAfter.LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
+            Assert.That (history.FirstAction(typeof(LoggingIn)).LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = true }));
+            Assert.That (history.FirstAction(typeof(LoggedIn)).LoginPage, Is.EqualTo (new LoginPageStore{ inProgress = false }));
         }
 
         [Test]
@@ -154,8 +159,8 @@ namespace XamarinFormsTester.UnitTests
             await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
             await store.Dispatch (DeviceListRefreshAction);
 
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(DeviceListRefreshStarted)).StateAfter.DevicePage.inProgress, Is.EqualTo (true));
-            Assert.That (history.Find(a => a.Action.GetType() == typeof(DeviceListRefreshFinished)).StateAfter.DevicePage.Devices, Is.EquivalentTo(new List<DeviceInfo>(){
+            Assert.That (history.FirstAction(typeof(DeviceListRefreshStarted)).DevicePage.inProgress, Is.EqualTo (true));
+            Assert.That (history.FirstAction(typeof(DeviceListRefreshFinished)).DevicePage.Devices, Is.EquivalentTo(new List<DeviceInfo>(){
                 new DeviceInfo{Id = new DeviceId("1"), Name = "D1", Online = true}
             }));
         }
