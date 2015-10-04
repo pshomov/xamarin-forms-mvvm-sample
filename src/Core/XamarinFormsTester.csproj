@@ -92,4 +92,10 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReduxVVM\ReduxVVM.csproj">
+      <Project>{251EF0AF-6DF7-455C-9705-72320BE0B695}</Project>
+      <Name>ReduxVVM</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
