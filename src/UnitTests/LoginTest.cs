@@ -100,13 +100,12 @@ namespace XamarinFormsTester.UnitTests
         Middleware<AppState> logger()
         {
             return s => next => action =>  {
-                var res = next (action);
+                next (action);
                 var after = s.GetState ();
                 history.Add (new LoggedAction<AppState> {
                     Action = action,
                     StateAfter = after
                 });
-                return res;
             };
         }
 

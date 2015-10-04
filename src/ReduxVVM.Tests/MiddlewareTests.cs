@@ -22,20 +22,18 @@ namespace XamarinFormsTester.UnitTests
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
-					var res = next(action);
+					next(action);
 					middlewareCounter += 3000;
 					Assert.That(middlewareCounter, Is.EqualTo(3333));
-					return res;
 				}, 
 				s => next => action => {
 					middlewareCounter += 30;
 					Assert.That(middlewareCounter, Is.EqualTo(33));
                     Assert.That(storeReducerReached, Is.EqualTo(0));
-					var res = next(action);
+					next(action);
 					Assert.That(storeReducerReached, Is.EqualTo(1));
 					middlewareCounter += 300;
 					Assert.That(middlewareCounter, Is.EqualTo(333));
-					return res;
 				}
 			);
 
@@ -56,17 +54,15 @@ namespace XamarinFormsTester.UnitTests
 					Assert.That(middlewareCounter, Is.EqualTo(3));
 					middlewareCounter += 3000;
 					Assert.That(middlewareCounter, Is.EqualTo(3003));
-					return action;
 				}, 
 				s => next => action => {
 					middlewareCounter += 30;
 					Assert.That(middlewareCounter, Is.EqualTo(33));
 					Assert.That(storeReducerReached, Is.EqualTo(0));
-					var res = next(action);
+					next(action);
 					Assert.That(storeReducerReached, Is.EqualTo(1));
 					middlewareCounter += 300;
 					Assert.That(middlewareCounter, Is.EqualTo(333));
-					return res;
 				}
 			);
 
@@ -85,17 +81,15 @@ namespace XamarinFormsTester.UnitTests
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
-					var res = next(action);
+					next(action);
 					middlewareCounter += 3000;
 					Assert.That(middlewareCounter, Is.EqualTo(3333));
-					return res;
 				}, 
 				s => next => action => {
 					middlewareCounter += 30;
 					Assert.That(middlewareCounter, Is.EqualTo(33));
 					middlewareCounter += 300;
 					Assert.That(middlewareCounter, Is.EqualTo(333));
-					return action;
 				}
 			);
 
