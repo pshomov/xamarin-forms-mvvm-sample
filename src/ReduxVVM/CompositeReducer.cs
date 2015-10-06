@@ -49,7 +49,7 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		}
 		public XamarinFormsTester.Infrastructure.ReduxVVM.Reducer<State> Get(){
 			return delegate(State state, XamarinFormsTester.Infrastructure.ReduxVVM.Action action) {
-                var result = initializer();
+                var result = action.GetType() == typeof(InitStoreAction) ? initializer() : state;
 				foreach (var fieldReducer in fieldReducers) {
                     var prevState = action.GetType() == typeof(InitStoreAction) ? null : fieldReducer.Item1.GetValue(state);
 					var newState = fieldReducer.Item2.DynamicInvoke(prevState, action);

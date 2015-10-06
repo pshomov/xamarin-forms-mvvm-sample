@@ -16,7 +16,7 @@ namespace XamarinFormsTester.UnitTests
 		public void should_allow_middleware_to_hook_into_dispatching(){
 			var storeReducerReached = 0;
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-			var store = new Store<List<String>> (reducer, new List<string>{});
+			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
             store.Middlewares( 
 				s => next => action => {
@@ -46,7 +46,7 @@ namespace XamarinFormsTester.UnitTests
 		public void should_allow_middleware_to_shortcut_lower_middleware(){
 			var storeReducerReached = 0;
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-			var store = new Store<List<String>> (reducer, new List<string>{});
+			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
             store.Middlewares(
 				s => next => action => {
@@ -75,7 +75,7 @@ namespace XamarinFormsTester.UnitTests
 		public void should_allow_middleware_shortcut_the_store_dispatcher(){
 			var storeReducerReached = 0;
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
-			var store = new Store<List<String>> (reducer, new List<string>{});
+			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
             store.Middlewares(
 				s => next => action => {

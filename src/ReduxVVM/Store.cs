@@ -24,16 +24,9 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 	public class Store<State> where State : new()
     {
         class SyncStore<State> : IStore<State> where State : new() {
-            public SyncStore (Reducer<State> rootReducer, State initialState)
-            {
-                this.rootReducer = rootReducer;
-                //                this._state = initialState;
-                this._state = rootReducer(this._state, new InitStoreAction());
-            }
             public SyncStore (Reducer<State> rootReducer)
             {
                 this.rootReducer = rootReducer;
-                //                this._state = initialState;
                 this._state = rootReducer(this._state, new InitStoreAction());
             }
 
@@ -96,11 +89,10 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
             this.middlewares = middlewares.Select(m => m(store)).Reverse().Aggregate<MiddlewareChainer, MiddlewareExecutor>(store.Dispatch, (acc, middle) => middle(acc));
         }
 
-		public Store (SimpleReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
-		public Store (CompositeReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
-        public Store (Reducer<State> rootReducer, State initialState)
+		public Store (SimpleReducer<State> rootReducer) : this(rootReducer.Get()){}
+		public Store (CompositeReducer<State> rootReducer) : this(rootReducer.Get()){}
+        public Store (Reducer<State> rootReducer)
         {
-//            store = new SyncStore<State> (rootReducer, initialState);
             store = new SyncStore<State> (rootReducer);
             this.Middlewares ();
         }

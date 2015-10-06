@@ -19,11 +19,11 @@ namespace ReduxVVM.Tests
         public async void should_allow_for_async_execution_of_code ()
         {
             var storeReducerReached = 0;
-            var reducer = new SimpleReducer<List<string>> ().When<SomeAction> ((s, e) => {
+            var reducer = new SimpleReducer<List<string>> (() => new List<string>{ "a" }).When<SomeAction> ((s, e) => {
                 storeReducerReached += 1;
                 return s;
             });
-            var store = new Store<List<String>> (reducer, new List<string>{ "a" });
+            var store = new Store<List<String>> (reducer);
 
             var result = await store.Dispatch (store.asyncAction<int> (async (dispatcher, store2) => {
                 await Task.Delay (300);
@@ -40,11 +40,11 @@ namespace ReduxVVM.Tests
         public async void should_allow_for_passing_parameters_to_async_actions ()
         {
             var storeReducerReached = 0;
-            var reducer = new SimpleReducer<List<string>> ().When<SomeAction> ((s, e) => {
+            var reducer = new SimpleReducer<List<string>> (() => new List<string>{ "a" }).When<SomeAction> ((s, e) => {
                 storeReducerReached += 1;
                 return s;
             });
-            var store = new Store<List<String>> (reducer, new List<string>{ "a" });
+            var store = new Store<List<String>> (reducer);
 
             var action1 = store.asyncAction<LoginInfo,int> (async (dispatcher, store2, msg) => {
                 await Task.Delay (300);

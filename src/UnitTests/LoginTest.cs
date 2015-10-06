@@ -88,7 +88,7 @@ namespace XamarinFormsTester.UnitTests
                 .Part (s => s.LoginPage, loginReducer)
                 .Part (s => s.DevicePage, deviceList);
 
-            store = new Store<AppState> (reducer, new AppState());
+            store = new Store<AppState> (reducer);
             LoginAction = store.asyncActionVoid<LoginInfo> (async (dispatch, getState, userinfo) => {
                 dispatch (new LoggingIn{ Username = userinfo.Username });
                 var loggedIn = await serviceAPI.AuthUser (userinfo.Username, userinfo.Password);
@@ -133,7 +133,7 @@ namespace XamarinFormsTester.UnitTests
         [Test]
         public void should_not_modify_original_state(){
             var state = new AppState ();
-            var store = new Store<AppState> (reducer, state);
+            var store = new Store<AppState> (reducer);
             store.Dispatch (new LoggingIn ());
             Assert.That (store.GetState (), Is.Not.EqualTo (state));
         }
