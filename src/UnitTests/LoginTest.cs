@@ -171,9 +171,9 @@ namespace XamarinFormsTester.UnitTests
         }
 
         [Test]
-        public async void should_retrieve_update_viwemodel_after_(){
-            var model = new DeviceListPageViewModel (store);
+        public async void should_update_view_model_after_each_action(){
             await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
+            var model = new DeviceListPageViewModel (store);
             await store.Dispatch (DeviceListRefreshAction);
 
             Assert.That (model.Devices.Count, Is.EqualTo (1));
