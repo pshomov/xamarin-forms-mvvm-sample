@@ -104,6 +104,7 @@ namespace XamarinFormsTester.UnitTests
                 {
                     Devices = new List<DeviceInfo>(),
                     Error = "",
+                    SelectedDeviceIndex = -1,
                     inProgress = false
                 })
                 .When<DeviceListRefreshStarted>((state, action) =>
@@ -112,8 +113,11 @@ namespace XamarinFormsTester.UnitTests
                     state.inProgress = true;
                     return state;
                 })
-                .When<DeviceListRefreshFinished>((state, action) =>
-                {
+                .When<DeviceSelectedAction>((s, a) => {
+                    s.SelectedDeviceIndex = 1;
+                    return s;
+                })
+                .When<DeviceListRefreshFinished>((state, action) => {
                     state.Devices = new List<DeviceInfo>(action.Devices);
                     state.inProgress = false;
                     return state;
@@ -202,13 +206,24 @@ namespace XamarinFormsTester.UnitTests
         }
 
         [Test]
-        public async void should_update_view_model_after_each_action()
-        {
-            await store.Dispatch(LoginAction(new LoginInfo {Username = "john", Password = "secret"}));
-            var model = new DeviceListPageViewModel(store);
-            await store.Dispatch(DeviceListRefreshAction);
+        public async void should_update_view_model_after_each_action(){
+            await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
+            var model = new DeviceListPageViewModel (store);
+            store.Dispatch (new UnhandledAction ());
+            Assert.That (model.Devices.Count, Is.EqualTo (0));
+            await store.Dispatch (DeviceListRefreshAction);
 
             Assert.That(model.Devices.Count, Is.EqualTo(1));
         }
+
+        [Test]
+        public async void should_easily_dispatch_sync_actions_from_view_model(){
+            await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
+            Assert.That (store.GetState ().DevicePage.SelectedDeviceIndex, Is.EqualTo (-1));
+            var model = new DeviceListPageViewModel (store);
+            model.Clicked.Execute (null);
+            Assert.That (store.GetState ().DevicePage.SelectedDeviceIndex, Is.EqualTo (1));
+        }
+
     }
 }

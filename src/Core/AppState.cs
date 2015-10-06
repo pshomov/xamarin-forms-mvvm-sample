@@ -14,6 +14,7 @@ namespace XamarinFormsTester
         public bool inProgress;
         public List<DeviceInfo> Devices;
         public String Error;
+        public int SelectedDeviceIndex;
     }
 	public struct AppState
 	{
