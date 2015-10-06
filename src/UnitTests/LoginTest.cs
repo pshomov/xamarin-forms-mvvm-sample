@@ -54,8 +54,8 @@ namespace XamarinFormsTester.UnitTests
 
         List<LoggedAction<AppState>> history = new List<LoggedAction<AppState>>();
 
-        Func<LoginInfo, Func<DispatcherDelegate, Store<AppState>.StoreDelegate, Task>> LoginAction;
-        Func<DispatcherDelegate, Store<AppState>.StoreDelegate, Task> DeviceListRefreshAction;
+        Func<LoginInfo, Func<DispatcherDelegate, Store<AppState>.GetStateDelegate, Task>> LoginAction;
+        Func<DispatcherDelegate, Store<AppState>.GetStateDelegate, Task> DeviceListRefreshAction;
 
         public Store<AppState> WireUpApp(){
             var loginReducer = new SimpleReducer<LoginPageStore> ()
@@ -72,8 +72,7 @@ namespace XamarinFormsTester.UnitTests
                     Devices = new List<DeviceInfo>(),
                     Error = "",
                     inProgress = false
-                }
-            )
+                })
                 .When<DeviceListRefreshStarted>((state, action) => {
                     state.Devices = new List<DeviceInfo>();
                     state.inProgress = true;
@@ -127,7 +126,7 @@ namespace XamarinFormsTester.UnitTests
             }));
 
             store = WireUpApp ();
-            store.Middlewares (logger ());
+            store.Middleware (logger ());
         }
 
         [Test]

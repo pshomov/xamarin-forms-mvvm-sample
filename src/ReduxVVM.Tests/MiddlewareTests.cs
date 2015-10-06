@@ -18,7 +18,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
-            store.Middlewares( 
+            store.Middleware( 
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
@@ -48,7 +48,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
-            store.Middlewares(
+            store.Middleware(
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
@@ -77,7 +77,7 @@ namespace XamarinFormsTester.UnitTests
 			var reducer = new SimpleReducer<List<string>>().When<SomeAction>((s,e) => {storeReducerReached += 1;return s;});
 			var store = new Store<List<String>> (reducer);
 			var middlewareCounter = 0;
-            store.Middlewares(
+            store.Middleware(
 				s => next => action => {
 					middlewareCounter += 3;
 					Assert.That(middlewareCounter, Is.EqualTo(3));
