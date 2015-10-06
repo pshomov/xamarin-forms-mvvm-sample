@@ -1,39 +1,41 @@
-using XamarinFormsTester.Infrastructure.ReduxVVM;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
-	public class SimpleReducer<State>
-	{
-        Dictionary<Type, Delegate> handlers = new Dictionary<Type, Delegate> ();
+    public class SimpleReducer<State>
+    {
+        private readonly Dictionary<Type, Delegate> handlers = new Dictionary<Type, Delegate>();
+        private readonly Func<State> initializer;
 
-        Func<State> initializer;
-
-        public SimpleReducer ()
-        {            
+        public SimpleReducer()
+        {
             initializer = () => default(State);
         }
-        public SimpleReducer (Func<State> initializer)
+
+        public SimpleReducer(Func<State> initializer)
         {
-            this.initializer = initializer;            
+            this.initializer = initializer;
         }
-        public SimpleReducer<State> When<Event>(Func<State, Event, State> handler) where Event : XamarinFormsTester.Infrastructure.ReduxVVM.Action, new() {
-            handlers.Add (typeof(Event), handler);
+
+        public SimpleReducer<State> When<Event>(Func<State, Event, State> handler) where Event : Action, new()
+        {
+            handlers.Add(typeof (Event), handler);
             return this;
         }
-        public XamarinFormsTester.Infrastructure.ReduxVVM.Reducer<State> Get(){
-            return delegate(State state, XamarinFormsTester.Infrastructure.ReduxVVM.Action action) {
-                var prevState = action.GetType() == typeof(InitStoreAction) ? initializer() : state;
-                if (handlers.ContainsKey(action.GetType())){
-                    var handler = handlers [action.GetType ()];
-                    return (State)handler.DynamicInvoke(prevState, action);
-                } else {
-                    return prevState;
+
+        public Reducer<State> Get()
+        {
+            return delegate(State state, Action action)
+            {
+                var prevState = action.GetType() == typeof (InitStoreAction) ? initializer() : state;
+                if (handlers.ContainsKey(action.GetType()))
+                {
+                    var handler = handlers[action.GetType()];
+                    return (State) handler.DynamicInvoke(prevState, action);
                 }
+                return prevState;
             };
         }
-	}
-
+    }
 }
-
