@@ -67,7 +67,13 @@ namespace XamarinFormsTester.UnitTests
                     s.inProgress = false;
                     return s;
                 });
-            var deviceList = new SimpleReducer<DeviceListPageStore> ()
+            var deviceList = new SimpleReducer<DeviceListPageStore> (
+                () => new DeviceListPageStore{
+                    Devices = new List<DeviceInfo>(),
+                    Error = "",
+                    inProgress = false
+                }
+            )
                 .When<DeviceListRefreshStarted>((state, action) => {
                     state.Devices = new List<DeviceInfo>();
                     state.inProgress = true;
@@ -162,6 +168,15 @@ namespace XamarinFormsTester.UnitTests
             Assert.That (history.FirstAction(typeof(DeviceListRefreshFinished)).DevicePage.Devices, Is.EquivalentTo(new List<DeviceInfo>(){
                 new DeviceInfo{Id = new DeviceId("1"), Name = "D1", Online = true}
             }));
+        }
+
+        [Test]
+        public async void should_retrieve_update_viwemodel_after_(){
+            var model = new DeviceListPageViewModel (store);
+            await store.Dispatch (LoginAction(new LoginInfo{Username = "john", Password = "secret"}));
+            await store.Dispatch (DeviceListRefreshAction);
+
+            Assert.That (model.Devices.Count, Is.EqualTo (1));
         }
 
     }

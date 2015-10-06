@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace XamarinFormsTester.Infrastructure.ReduxVVM
 {
     public interface Action {}
+    public class InitStoreAction : Action {}
 
     public delegate State Reducer<State>(State state, Action action);
 	public delegate void StateChanged<State>(State state);
@@ -26,7 +27,14 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
             public SyncStore (Reducer<State> rootReducer, State initialState)
             {
                 this.rootReducer = rootReducer;
-                this._state = initialState;
+                //                this._state = initialState;
+                this._state = rootReducer(this._state, new InitStoreAction());
+            }
+            public SyncStore (Reducer<State> rootReducer)
+            {
+                this.rootReducer = rootReducer;
+                //                this._state = initialState;
+                this._state = rootReducer(this._state, new InitStoreAction());
             }
 
             public Unsubscribe Subscribe(StateChanged<State> subscription){
@@ -92,7 +100,8 @@ namespace XamarinFormsTester.Infrastructure.ReduxVVM
 		public Store (CompositeReducer<State> rootReducer, State initialState) : this(rootReducer.Get(), initialState){}
         public Store (Reducer<State> rootReducer, State initialState)
         {
-            store = new SyncStore<State> (rootReducer, initialState);
+//            store = new SyncStore<State> (rootReducer, initialState);
+            store = new SyncStore<State> (rootReducer);
             this.Middlewares ();
         }
 

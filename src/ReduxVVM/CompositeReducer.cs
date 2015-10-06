@@ -10,6 +10,18 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 	{
 		List<Tuple<FieldInfo, Delegate>> fieldReducers = new List<Tuple<FieldInfo, Delegate>>();
 
+        Func<State> initializer;
+
+        public CompositeReducer ()
+        {
+            initializer = () => default(State);            
+        }
+
+        public CompositeReducer (Func<State> initializer)
+        {
+            this.initializer = initializer;
+            
+        }
 		public CompositeReducer<State> Part<T> (Expression<Func<State, T>> composer, SimpleReducer<T> reducer)
 		{
 			return Part<T> (composer, reducer.Get ());
@@ -37,9 +49,9 @@ namespace XamarinFormsTester.UnitTests.ReduxVVM
 		}
 		public XamarinFormsTester.Infrastructure.ReduxVVM.Reducer<State> Get(){
 			return delegate(State state, XamarinFormsTester.Infrastructure.ReduxVVM.Action action) {
-				var result = new State();
+                var result = initializer();
 				foreach (var fieldReducer in fieldReducers) {
-					var prevState = fieldReducer.Item1.GetValue(state);
+                    var prevState = action.GetType() == typeof(InitStoreAction) ? null : fieldReducer.Item1.GetValue(state);
 					var newState = fieldReducer.Item2.DynamicInvoke(prevState, action);
 					object boxer = result; //boxing to allow the next line work for both reference and value objects
 					fieldReducer.Item1.SetValue(boxer, newState);
