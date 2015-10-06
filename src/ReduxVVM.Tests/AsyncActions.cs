@@ -25,7 +25,7 @@ namespace ReduxVVM.Tests
             });
             var store = new Store<List<string>>(reducer);
 
-            var result = await store.Dispatch(store.asyncAction(async (dispatcher, store2) =>
+            var result = await store.Dispatch(store.asyncAction<int>(async (dispatcher, store2) =>
             {
                 await Task.Delay(300);
                 Assert.That(store2()[0], Is.EqualTo("a"));
