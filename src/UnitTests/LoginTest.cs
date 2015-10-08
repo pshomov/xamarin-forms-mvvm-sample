@@ -31,6 +31,10 @@ namespace XamarinFormsTester.UnitTests
     {
     }
 
+    public class UnhandledAction : Action
+    {
+    }
+
     public class DeviceListRefreshStarted : Action
     {
     }
